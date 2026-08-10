@@ -1,5 +1,7 @@
 # ai-baton
 
+[中文](README.zh-CN.md)
+
 Portable, auditable, file-first handoff protocol for AI assistants.
 
 Lets you move between AI tools — Claude Code, Codex CLI, Cursor, or
