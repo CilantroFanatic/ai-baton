@@ -1,15 +1,63 @@
 # Quickstart
 
+Two commands, once, ever:
+
 ```bash
 pip install ai-baton-tool
-# or: uvx --from ai-baton-tool ai-baton --help
+ai-baton skill install
 ```
 
-The PyPI distribution is named `ai-baton-tool` (an unrelated existing
-package blocked the plain `ai-baton` name) but the command is `ai-baton`
-either way.
+(`ai-baton-tool` is the PyPI distribution name — an unrelated existing
+package blocked plain `ai-baton` — but the command is `ai-baton` either
+way. `skill install` writes `SKILL.md` into `~/.claude/skills/ai-baton/`
+and `~/.agents/skills/ai-baton/`, the lookup paths Claude Code and Codex
+CLI scan.)
 
-To work on the code itself instead, install from a local checkout:
+That's it. From here you just talk to your AI tool normally.
+
+## Using it
+
+Say something like "start a new memory project for my thesis" or "pick up
+where we left off on the exam-prep project." The AI — per the skill it
+just read — asks where (new project) or notices the existing
+`PROTOCOL.md` (continuing one), then runs `ai-baton init` / `validate` /
+`status` on your behalf. You shouldn't need to type any of those commands
+yourself; they're what the AI runs, not what you run.
+
+Verified live in Claude Code: install the skill, ask it to start or
+continue a project, and it follows the read-order/update rules
+automatically. Not yet tested in Codex CLI or Cursor.
+
+If your AI tool doesn't have shell access to run the CLI itself, or
+`ai-baton` isn't installed yet, the skill tells it to create the
+`memory/`/`status/`/`evidence/`/`handover/`/`archive/` structure by hand
+instead — same result either way.
+
+## Manual / scripted use
+
+For driving it directly — CI, scripts, or without an AI in the loop:
+
+```bash
+ai-baton init my-project        # scaffold the structure
+ai-baton status my-project      # print PROTOCOL.md + memory/INDEX.md + CURRENT_STATUS.md, in read order
+ai-baton validate my-project    # check frontmatter, links, staleness
+```
+
+`validate` checks: required directories exist, `PROTOCOL.md` and
+`status/CURRENT_STATUS.md` exist and aren't empty, every file under
+`memory/` has frontmatter matching `schemas/memory-frontmatter.schema.json`,
+internal links resolve, and `CURRENT_STATUS.md` isn't more than 30 days
+stale (a warning, not a hard failure).
+
+`skill install` also accepts explicit paths instead of the two global
+defaults, e.g. to scope it to one project:
+
+```bash
+ai-baton skill install my-project/.agents/skills
+```
+
+To work on ai-baton's own code instead of just using it, install from a
+local checkout:
 
 ```bash
 git clone https://github.com/CilantroFanatic/ai-baton
@@ -22,83 +70,6 @@ If `import ai_baton` fails right after that with `ModuleNotFoundError`
 despite `pip` reporting success, your venv isn't processing `.pth` files
 (seen on at least one machine) — use `pip install .` (no `-e`) instead, or
 run with `PYTHONPATH=src`.
-
-## Start a new project
-
-```bash
-ai-baton init my-project
-cd my-project
-```
-
-This creates `memory/`, `status/`, `evidence/`, `handover/`, `archive/`,
-plus a starter `PROTOCOL.md`, `memory/INDEX.md`, and
-`status/CURRENT_STATUS.md`. `init` never overwrites existing files — safe
-to re-run.
-
-Fill in `status/CURRENT_STATUS.md` with whatever you're actually doing:
-
-```markdown
-Last updated: 2026-08-12
-Updated by: you
-
-## Current goal
-
-...
-
-## Next steps
-
-...
-```
-
-## Hand a session off (to yourself later, or to a different AI tool)
-
-```bash
-ai-baton status my-project
-```
-
-Prints `PROTOCOL.md` + `memory/INDEX.md` + `status/CURRENT_STATUS.md`, in
-the order SPEC.md section 4 says any session should read them in. Paste
-that (or pipe it) into a fresh session, in Claude Code, Codex CLI, Cursor,
-or anything else that can read the resulting files directly off disk —
-there's no dependency on any of them specifically.
-
-## Check you haven't broken the protocol's own rules
-
-```bash
-ai-baton validate my-project
-```
-
-Checks: required directories exist, `PROTOCOL.md` and
-`status/CURRENT_STATUS.md` exist and aren't empty, every file under
-`memory/` has frontmatter matching `schemas/memory-frontmatter.schema.json`
-(see SPEC.md section 5), internal Markdown links resolve, and
-`status/CURRENT_STATUS.md` isn't more than 30 days stale (a warning, not a
-hard failure — dates it, doesn't guess at what "stale" should mean for
-your project).
-
-## Let an AI follow the protocol without being reminded
-
-```bash
-ai-baton skill install
-```
-
-Writes `SKILL.md` into `~/.claude/skills/ai-baton/` (Claude Code's own
-lookup path) and `~/.agents/skills/ai-baton/` (the shared
-[Agent Skills](https://agentskills.io/) convention Codex CLI also scans),
-user-wide so it works across every project. Pass one or more paths instead
-to install somewhere else, e.g. a project-local `.agents/skills`:
-
-```bash
-ai-baton skill install my-project/.agents/skills
-```
-
-Tested live in Claude Code (triggers immediately). Not yet tested in Codex
-or Cursor.
-
-Once installed, the AI notices when a directory already has a
-`PROTOCOL.md` and reads it first, or asks whether to start a new project
-when that's not obvious — handy if you're running several projects at
-once (one per exam, one for a thesis) and don't want them mixed up.
 
 ## See it end to end
 
