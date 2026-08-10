@@ -31,6 +31,15 @@ the magic words:
 In both cases, get the user's go-ahead before creating anything. This is
 an offer, not something to do silently in the background.
 
+**Never create a throwaway "demo" or "example" project just to show the
+tool working** — even if the user literally said "install this and try
+it out." That's not a reason to invent fake content; it's an opening to
+ask what they'd actually want to track, and set *that* up for real. The
+trial run and the first real project should be the same thing. (If they
+want to see a worked example first, point them at
+[`examples/demo-project/`](https://github.com/CilantroFanatic/ai-baton/tree/main/examples/demo-project)
+in the repo instead of building a new one.)
+
 ## Step 1 — figure out which project this is, before doing anything else
 
 If the user named or is obviously pointing at a specific directory, check
