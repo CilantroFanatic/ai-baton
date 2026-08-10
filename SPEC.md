@@ -24,6 +24,18 @@ Status: DRAFT. This is v0.1 of the protocol — expect breaking changes before v
 - Multi-user real-time sync, hosted service, or access control.
 - Running or orchestrating AI agents. This spec only defines files and
   conventions; it does not execute anything.
+- Defending against untrusted content. This protocol assumes everyone with
+  write access to a project's files is trusted — the same model as
+  `AGENTS.md`/`CLAUDE.md`. Every file here is written specifically to be
+  read and acted on by an AI, which makes it a prompt-injection vector by
+  construction if untrusted content ever ends up in `memory/`/`evidence/`
+  (a shared directory, a synced drive, unreviewed external content pasted
+  in). There is no syntactic pattern that reliably distinguishes a
+  legitimate memory entry from an injected one — a real injection doesn't
+  need obvious trigger phrases, it can read as ordinary prose — so this is
+  not solved by tooling here. Don't paste unreviewed external content into
+  these files, and don't share write access to a project with anyone you
+  wouldn't trust to edit `AGENTS.md` in a shared repo.
 
 These may be revisited in later versions, but v0.1 is intentionally narrow.
 
