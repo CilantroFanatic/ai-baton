@@ -1,5 +1,5 @@
 [project]
-name = "ai-baton"
+name = "ai-baton-cli"
 version = "0.0.1"
 description = "Portable, auditable, file-first handoff protocol for AI assistants."
 readme = "README.md"
