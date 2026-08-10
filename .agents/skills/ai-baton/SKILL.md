@@ -31,6 +31,21 @@ the magic words:
 In both cases, get the user's go-ahead before creating anything. This is
 an offer, not something to do silently in the background.
 
+**How you ask matters as much as what you ask.** If your environment
+offers a structured/interactive question mechanism (multiple-choice with
+a free-text fallback, buttons, whatever your host supports) — use it
+instead of a plain open paragraph, every time you ask the user something
+in this skill: Step 1's new-vs-existing question, the project name/goal
+in Step 2a, the backfill confirmation in Step 2a.4. This holds even when
+the real answer is open-ended (e.g. "what do you want to track") — offer
+a few illustrative categories (thesis, exam prep, job search, whatever
+fits the conversation) as quick picks, with "something else" as an
+explicit option that lets them type freely. A guided pick-one-or-type-
+your-own beats a blank prompt, especially for someone who's never heard of
+this before (that's the whole point of Step 0). If your environment has no
+such mechanism, plain text is fine — this is about using what's
+available, not requiring a specific tool.
+
 **Never create a throwaway "demo" or "example" project just to show the
 tool working** — even if the user literally said "install this and try
 it out." That's not a reason to invent fake content; it's an opening to
