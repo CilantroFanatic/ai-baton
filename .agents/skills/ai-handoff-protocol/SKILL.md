@@ -32,7 +32,12 @@ directory, if none was named):
 
 ## Step 2a — New project
 
-1. Confirm the target directory path with the user if it wasn't explicit.
+1. **Get an explicit target directory path from the user before creating
+   anything.** Never default to the current directory, a guessed path, or
+   anything the user didn't actually say — if Step 1's question didn't
+   already get a path, ask for one now and wait for the answer. Creating a
+   new project in the wrong place is exactly the "mixed together" problem
+   Step 1 exists to prevent.
 2. If the `ai-handoff-protocol` CLI is installed (`ai-handoff-protocol
    --help` succeeds), run:
    ```
