@@ -1,6 +1,6 @@
 ---
 name: ai-baton
-description: Use when the user wants to start, continue, or hand off a long-running project using the ai-baton file-based memory convention (a directory with PROTOCOL.md, memory/, status/, evidence/, handover/, archive/). Triggers on requests like "start a new memory project for X", "continue the Y project", "pick up where we left off on Z", or when the current directory already contains a PROTOCOL.md file. Not for generic note-taking or one-off tasks with no need to persist state across sessions or tools.
+description: Use when the user wants to start, continue, or hand off a long-running project using the ai-baton file-based memory convention (a directory with PROTOCOL.md, memory/, status/, evidence/, handover/, archive/). Triggers on explicit requests like "start a new memory project for X", "continue the Y project", "pick up where we left off on Z", or when the current directory already contains a PROTOCOL.md file. Also worth proactively offering — not assuming, explained in plain language — partway through a conversation that has clearly turned into a substantial, multi-session project, even if the user never says "ai-baton" or "memory project" by name; most users won't know this exists or what to ask for. Not for generic note-taking or one-off tasks with no need to persist state across sessions or tools.
 ---
 
 # ai-baton
@@ -8,6 +8,28 @@ description: Use when the user wants to start, continue, or hand off a long-runn
 Full rules: `SPEC.md` in the [ai-baton](https://github.com/CilantroFanatic/ai-baton)
 repo. This skill is the condensed, self-contained version needed to operate
 day to day — read `SPEC.md` itself only if something here is ambiguous.
+
+## Step 0 — don't assume the user knows what this is
+
+Most users have no idea "ai-baton" exists and won't ask for it by name.
+Two situations where you're the one who has to bring it up, not wait for
+the magic words:
+
+- **You (the AI) notice a conversation has become a substantial,
+  multi-session project** — the kind of thing where losing context on a
+  tool switch or a new session would actually hurt. Say so and explain in
+  one or two plain sentences what you're proposing (a directory of files
+  that any AI tool can read later, so the user doesn't have to re-explain
+  things) *before* asking anything else. Don't drop protocol jargon
+  ("PROTOCOL.md", "confidence: unverified") on someone who hasn't opted in
+  yet.
+- **The user (or you) discovers this mid-conversation** — they weren't
+  setting this up from message one; there's already real history in this
+  conversation that matters. Don't treat that history as if it doesn't
+  exist — see Step 2a.4.
+
+In both cases, get the user's go-ahead before creating anything. This is
+an offer, not something to do silently in the background.
 
 ## Step 1 — figure out which project this is, before doing anything else
 
@@ -53,7 +75,24 @@ directory, if none was named):
    <path>/handover/
    <path>/archive/
    ```
-4. Ask the user what the actual current goal is, and write it into
+4. **Don't treat this as a blank slate if it isn't one.** If the
+   conversation already has substantial history relevant to this project —
+   the user didn't start talking about this five seconds ago — review it
+   instead of just asking "what's your current goal" as if nothing
+   happened. Sort what you find into:
+   - Things that look like durable facts/decisions → candidates for
+     `memory/`, but `confidence: unverified` unless the user actually
+     confirms them now — you're inferring from a conversation, not from a
+     primary source.
+   - What's actually happening right now → `status/CURRENT_STATUS.md`.
+   - Raw detail worth preserving (a specific error, a specific exchange) →
+     `evidence/`.
+
+   Show the user this breakdown and get confirmation before writing any of
+   it — don't silently decide on their behalf what from the conversation
+   mattered enough to keep.
+5. If there's truly nothing to backfill (a genuinely fresh start), ask the
+   user what the actual current goal is, and write it into
    `status/CURRENT_STATUS.md`. Don't leave it as a template placeholder.
 
 ## Step 2b — Existing project
