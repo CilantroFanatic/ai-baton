@@ -54,6 +54,14 @@ Implemented:
       and forth) exercising confidence promotion, an in-place correction,
       `archive/`, and `handover/`. Passes `validate` clean; is what CI
       checks on every push.
+- [x] [`.agents/skills/ai-handoff-protocol/SKILL.md`](.agents/skills/ai-handoff-protocol/SKILL.md) —
+      an [Agent Skills](https://agentskills.io/)-format skill so an AI tool
+      can be told about the protocol once (install it globally or
+      per-project) instead of being reminded every session. It asks
+      whether you're continuing an existing project or starting a new one,
+      then follows SPEC.md's read-order and update-discipline rules.
+      Frontmatter-checked by `tests/test_skill.py`; not yet manually
+      exercised inside an actual Claude Code / Codex / Cursor session.
 
 Not implemented / not yet true — don't assume otherwise:
 - [ ] Not published to PyPI. `uvx ai-handoff-protocol` will not work yet —
@@ -77,6 +85,9 @@ Not implemented / not yet true — don't assume otherwise:
   cross-AI handoff actually works, once there's something to measure.
 - [`examples/demo-project/`](examples/demo-project/) — the worked example,
   narrated in its own README.
+- [`.agents/skills/ai-handoff-protocol/SKILL.md`](.agents/skills/ai-handoff-protocol/SKILL.md) —
+  install this and an AI tool that supports Agent Skills follows the
+  protocol without being told to each session.
 
 ## License
 

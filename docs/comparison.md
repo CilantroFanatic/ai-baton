@@ -38,3 +38,9 @@ capable than this one.
   evolving state/evidence layer AGENTS.md explicitly doesn't cover. A
   project can use both — an `AGENTS.md` that points at this protocol's
   directories.
+- Adoption doesn't need a per-vendor plugin: the
+  [Agent Skills](https://agentskills.io/) open standard (released by
+  Anthropic in December 2025) means one `SKILL.md` — this repo ships one at
+  [`.agents/skills/ai-handoff-protocol/`](../.agents/skills/ai-handoff-protocol/SKILL.md) —
+  is read the same way by Claude Code, Codex CLI, Cursor, and other tools
+  that implement the spec, without a separate integration per tool.

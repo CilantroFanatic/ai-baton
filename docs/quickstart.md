@@ -10,6 +10,11 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 ```
 
+If `import ai_handoff_protocol` fails right after that with
+`ModuleNotFoundError` despite `pip` reporting success, your venv isn't
+processing `.pth` files (seen on at least one machine) — see
+`CONTRIBUTING.md`'s note for the `pip install .` (no `-e`) workaround.
+
 ## Start a new project
 
 ```bash
@@ -62,6 +67,37 @@ Checks: required directories exist, `PROTOCOL.md` and
 `status/CURRENT_STATUS.md` isn't more than 30 days stale (a warning, not a
 hard failure — dates it, doesn't guess at what "stale" should mean for
 your project).
+
+## Let an AI follow the protocol without being reminded
+
+Copy the skill somewhere an [Agent Skills](https://agentskills.io/)-compatible
+tool looks for it — globally (works across every project you point the tool
+at):
+
+```bash
+mkdir -p ~/.agents/skills
+cp -r .agents/skills/ai-handoff-protocol ~/.agents/skills/
+```
+
+or per-project, if you'd rather scope it to one place:
+
+```bash
+mkdir -p /path/to/some/project/.agents/skills
+cp -r .agents/skills/ai-handoff-protocol /path/to/some/project/.agents/skills/
+```
+
+With this installed, a tool that supports Agent Skills (Claude Code, Codex
+CLI, Cursor, and others as of 2026 — see `docs/comparison.md`) should, on
+its own: notice when you're working in a directory that already has a
+`PROTOCOL.md` and read it first, or ask whether to start a new
+ai-handoff-protocol project when it's not obvious which one you mean —
+useful if you keep several going at once (one per exam, one per thesis,
+etc.) and don't want them bleeding into each other.
+
+This hasn't been exercised in an actual Claude Code/Codex/Cursor session
+yet — only frontmatter-checked by `tests/test_skill.py`. If it doesn't
+trigger the way this describes, that's a real gap to report, not a
+misunderstanding on your end.
 
 ## See it end to end
 
