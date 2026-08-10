@@ -60,8 +60,12 @@ Implemented:
       per-project) instead of being reminded every session. It asks
       whether you're continuing an existing project or starting a new one,
       then follows SPEC.md's read-order and update-discipline rules.
-      Frontmatter-checked by `tests/test_skill.py`; not yet manually
-      exercised inside an actual Claude Code / Codex / Cursor session.
+      Frontmatter-checked by `tests/test_skill.py`. Verified live in an
+      actual Claude Code session (symlinked into `~/.claude/skills/`,
+      triggered immediately, no restart needed). Also symlinked into
+      `~/.agents/skills/` for Codex CLI per that tool's documented lookup
+      path, but not yet actually exercised in Codex or Cursor — don't
+      assume it works there just because Claude Code did.
 
 Not implemented / not yet true — don't assume otherwise:
 - [ ] Not published to PyPI. `uvx ai-handoff-protocol` will not work yet —

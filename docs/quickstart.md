@@ -70,34 +70,32 @@ your project).
 
 ## Let an AI follow the protocol without being reminded
 
-Copy the skill somewhere an [Agent Skills](https://agentskills.io/)-compatible
-tool looks for it — globally (works across every project you point the tool
-at):
+Symlink the skill (not a copy — one canonical file, no drift between
+installed locations) into wherever [Agent Skills](https://agentskills.io/)-
+compatible tools look for it, user-wide so it works across every project:
 
 ```bash
-mkdir -p ~/.agents/skills
-cp -r .agents/skills/ai-handoff-protocol ~/.agents/skills/
+mkdir -p ~/.claude/skills ~/.agents/skills
+ln -s "$(pwd)/.agents/skills/ai-handoff-protocol" ~/.claude/skills/ai-handoff-protocol
+ln -s "$(pwd)/.agents/skills/ai-handoff-protocol" ~/.agents/skills/ai-handoff-protocol
 ```
 
-or per-project, if you'd rather scope it to one place:
+`~/.claude/skills/` is Claude Code's own lookup path; `~/.agents/skills/`
+is the newer shared convention Codex CLI (and reportedly others) scan too.
+Installing both costs nothing and doesn't assume either one is redundant.
 
-```bash
-mkdir -p /path/to/some/project/.agents/skills
-cp -r .agents/skills/ai-handoff-protocol /path/to/some/project/.agents/skills/
-```
+**Verified vs. not verified:** the `~/.claude/skills/` install was tested
+live in an actual Claude Code session — calling the skill picked it up
+immediately, no restart needed. The `~/.agents/skills/` path for Codex CLI
+is only confirmed by documentation research, not by actually running Codex
+here. If you try it in Codex and it doesn't trigger, that's a real gap to
+report, not a misunderstanding on your end.
 
-With this installed, a tool that supports Agent Skills (Claude Code, Codex
-CLI, Cursor, and others as of 2026 — see `docs/comparison.md`) should, on
-its own: notice when you're working in a directory that already has a
-`PROTOCOL.md` and read it first, or ask whether to start a new
-ai-handoff-protocol project when it's not obvious which one you mean —
-useful if you keep several going at once (one per exam, one per thesis,
-etc.) and don't want them bleeding into each other.
-
-This hasn't been exercised in an actual Claude Code/Codex/Cursor session
-yet — only frontmatter-checked by `tests/test_skill.py`. If it doesn't
-trigger the way this describes, that's a real gap to report, not a
-misunderstanding on your end.
+With this installed, the AI should, on its own: notice when you're working
+in a directory that already has a `PROTOCOL.md` and read it first, or ask
+whether to start a new ai-handoff-protocol project when it's not obvious
+which one you mean — useful if you keep several going at once (one per
+exam, one per thesis, etc.) and don't want them bleeding into each other.
 
 ## See it end to end
 
