@@ -46,6 +46,11 @@ this before (that's the whole point of Step 0). If your environment has no
 such mechanism, plain text is fine — this is about using what's
 available, not requiring a specific tool.
 
+**Order options with the recommended pick first, decline/skip last.** If
+one option is what you'd actually suggest, lead with it; put "no need" /
+"skip this" / "not now" at the end of the list, not the front — don't bury
+the recommendation or make the exit the first thing the user sees.
+
 **Never create a throwaway "demo" or "example" project just to show the
 tool working** — even if the user literally said "install this and try
 it out." That's not a reason to invent fake content; it's an opening to
