@@ -11,6 +11,12 @@ append-only `evidence/` trail, `handover/` snapshots, and `archive/` for
 superseded plans. No server, no vector DB, no vendor plugin required —
 every change is just a git diff.
 
+Requires local filesystem access — this works with tools that run on your
+machine or have been given access to a folder (Claude Code, Codex CLI,
+Cursor, Windsurf, Claude Desktop with a filesystem connector, etc.). Plain
+web ChatGPT or web Claude.ai chat, without file access, can't read
+`PROTOCOL.md` at all, regardless of Agent Skills support.
+
 Not the first system aiming at cross-tool AI memory — Mem0, OpenMemory,
 and Letta solve overlapping problems with a vector store and/or an agent
 runtime. This makes the opposite trade-off: zero infrastructure and
