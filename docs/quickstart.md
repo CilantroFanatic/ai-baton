@@ -19,6 +19,12 @@ something that doesn't translate, that's a real gap to report.)
 
 That's it. From here you just talk to your AI tool normally.
 
+**If an AI is running this quickstart on a user's behalf** (e.g. the user
+said "install and try ai-baton"): do `skill install` before creating any
+demo project, not after. Once it's installed, re-read it (`Skill:
+ai-baton`) and follow its Step 1/2a instead of improvising a demo project
+path — that's what puts things in the right place from the start.
+
 ## Using it
 
 Say something like "start a new memory project for my thesis" or "pick up
@@ -49,13 +55,19 @@ instead — same result either way.
 
 ## Manual / scripted use
 
-For driving it directly — CI, scripts, or without an AI in the loop:
+For driving it directly — CI, scripts, or without an AI in the loop. **If
+an AI is setting this up on a user's behalf, this section is not the
+procedure to follow** — that's the skill's job (Step 1/2a), and it already
+knows to default into the workspace. Copying the bare `my-project` example
+below literally, especially before the skill is even installed, is exactly
+how a project ends up scaffolded in the wrong place — install the skill
+*first*, then let it decide where things go.
 
 ```bash
-ai-baton list                   # show projects under ~/ai-baton-workspace (or pass a different dir)
-ai-baton init my-project        # scaffold the structure
-ai-baton status my-project      # print PROTOCOL.md + memory/INDEX.md + CURRENT_STATUS.md, in read order
-ai-baton validate my-project    # check frontmatter, links, staleness
+ai-baton list                                    # show projects under ~/ai-baton-workspace (or pass a different dir)
+ai-baton init ~/ai-baton-workspace/my-project     # scaffold a project inside the workspace
+ai-baton status ~/ai-baton-workspace/my-project   # print PROTOCOL.md + memory/INDEX.md + CURRENT_STATUS.md, in read order
+ai-baton validate ~/ai-baton-workspace/my-project # check frontmatter, links, staleness
 ```
 
 `validate` checks: required directories exist, `PROTOCOL.md` and
