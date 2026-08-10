@@ -23,7 +23,7 @@ This project targets Python + `uv`:
 ```bash
 uv sync
 uv run pytest
-uv run ai-handoff-protocol validate examples/demo-project
+uv run ai-baton validate examples/demo-project
 ```
 
 If `uv` isn't available, a plain venv works too:
@@ -37,5 +37,5 @@ pytest
 **Editable installs (`pip install -e .`) can silently fail to import** on
 some setups — a conda-derived `venv` we tested doesn't process `.pth`
 files, so `pip install -e .` reports success but `import
-ai_handoff_protocol` fails. If you hit that, use `pip install .` (no `-e`)
+ai_baton` fails. If you hit that, use `pip install .` (no `-e`)
 or run with `PYTHONPATH=src`.

@@ -18,7 +18,7 @@ TEMPLATED_FILES = [
 
 
 def run(target: Path) -> list[str]:
-    """Scaffold the ai-handoff-protocol directory structure under `target`.
+    """Scaffold the ai-baton directory structure under `target`.
 
     Existing files and directories are left untouched — init is safe to
     re-run on a project that already has content in it. Returns a list of

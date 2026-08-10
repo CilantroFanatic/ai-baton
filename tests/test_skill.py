@@ -4,7 +4,7 @@ from pathlib import Path
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SKILL_DIR = REPO_ROOT / ".agents" / "skills" / "ai-handoff-protocol"
+SKILL_DIR = REPO_ROOT / ".agents" / "skills" / "ai-baton"
 SKILL_FILE = SKILL_DIR / "SKILL.md"
 
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?\n)---\s*\n", re.DOTALL)

@@ -1,11 +1,11 @@
 ---
-name: ai-handoff-protocol
-description: Use when the user wants to start, continue, or hand off a long-running project using the ai-handoff-protocol file-based memory convention (a directory with PROTOCOL.md, memory/, status/, evidence/, handover/, archive/). Triggers on requests like "start a new memory project for X", "continue the Y project", "pick up where we left off on Z", or when the current directory already contains a PROTOCOL.md file. Not for generic note-taking or one-off tasks with no need to persist state across sessions or tools.
+name: ai-baton
+description: Use when the user wants to start, continue, or hand off a long-running project using the ai-baton file-based memory convention (a directory with PROTOCOL.md, memory/, status/, evidence/, handover/, archive/). Triggers on requests like "start a new memory project for X", "continue the Y project", "pick up where we left off on Z", or when the current directory already contains a PROTOCOL.md file. Not for generic note-taking or one-off tasks with no need to persist state across sessions or tools.
 ---
 
-# ai-handoff-protocol
+# ai-baton
 
-Full rules: `SPEC.md` in the [ai-handoff-protocol](https://github.com/ai-handoff-protocol/ai-handoff-protocol)
+Full rules: `SPEC.md` in the [ai-baton](https://github.com/CilantroFanatic/ai-baton)
 repo. This skill is the condensed, self-contained version needed to operate
 day to day — read `SPEC.md` itself only if something here is ambiguous.
 
@@ -15,7 +15,7 @@ Check the directory the user is pointing at (or the current working
 directory, if none was named):
 
 - **If it already has a `PROTOCOL.md`**: this is an existing
-  ai-handoff-protocol project. Go to Step 2 (Existing project). Don't ask —
+  ai-baton project. Go to Step 2 (Existing project). Don't ask —
   the file's presence is the answer.
 - **If it doesn't, and the user's intent isn't already obvious from what
   they just said**: ask directly. Don't guess and don't silently create
@@ -26,7 +26,7 @@ directory, if none was named):
   > continuing, which directory? If new, what should it be called and where
   > should it live?")
 
-  If the user has multiple ai-handoff-protocol projects going (e.g. one per
+  If the user has multiple ai-baton projects going (e.g. one per
   exam, one for a thesis), this is the moment that keeps them from getting
   mixed together — don't assume which one "the project" means.
 
@@ -38,10 +38,10 @@ directory, if none was named):
    already get a path, ask for one now and wait for the answer. Creating a
    new project in the wrong place is exactly the "mixed together" problem
    Step 1 exists to prevent.
-2. If the `ai-handoff-protocol` CLI is installed (`ai-handoff-protocol
+2. If the `ai-baton` CLI is installed (`ai-baton
    --help` succeeds), run:
    ```
-   ai-handoff-protocol init <path>
+   ai-baton init <path>
    ```
 3. If the CLI isn't installed, create the structure by hand — it's just
    files:
@@ -92,4 +92,4 @@ that might be stale or fabricated.
 - **Never write credentials** (passwords, API keys, tokens) into any file
   here.
 - Before ending a session, if the CLI is available, run
-  `ai-handoff-protocol validate <path>` and fix anything it flags.
+  `ai-baton validate <path>` and fix anything it flags.

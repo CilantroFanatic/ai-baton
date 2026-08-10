@@ -1,4 +1,4 @@
-# ai-handoff-protocol — Specification v0.1
+# ai-baton — Specification v0.1
 
 Status: DRAFT. This is v0.1 of the protocol — expect breaking changes before v1.0.
 

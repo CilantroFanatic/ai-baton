@@ -12,7 +12,7 @@ def test_root_and_packaged_schema_copies_match() -> None:
     packaged = (
         REPO_ROOT
         / "src"
-        / "ai_handoff_protocol"
+        / "ai_baton"
         / "schemas"
         / "memory-frontmatter.schema.json"
     ).read_text()

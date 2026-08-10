@@ -1,6 +1,6 @@
 # demo-project (fictional example)
 
-A worked, multi-session example of `ai-handoff-protocol` v0.1, entirely
+A worked, multi-session example of `ai-baton` v0.1, entirely
 fictional: a small team migrating a library called `northwind-api` from v2
 to v3, handed between two different AI coding assistants across three
 sessions. Not based on any real project or real data.
@@ -8,8 +8,8 @@ sessions. Not based on any real project or real data.
 Validate it yourself:
 
 ```bash
-ai-handoff-protocol validate examples/demo-project
-ai-handoff-protocol status examples/demo-project
+ai-baton validate examples/demo-project
+ai-baton status examples/demo-project
 ```
 
 ## The narrative
@@ -21,7 +21,7 @@ module-by-module migration behind an adapter
 (`memory/0001-migration-strategy.md`).
 
 **Session 2 — 2026-08-11 (tool B, a different AI tool).** Picks the project
-up cold — in a real session this would start with `ai-handoff-protocol
+up cold — in a real session this would start with `ai-baton
 status .`, which prints `PROTOCOL.md` + `memory/INDEX.md` +
 `status/CURRENT_STATUS.md` in the order SPEC.md section 4 requires. Builds
 the HTTP client adapter (`evidence/2026-08-11-adapter-implementation.md`),

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/ai-handoff-protocol/ai-handoff-protocol/schemas/memory-frontmatter.schema.json",
-  "title": "ai-handoff-protocol memory frontmatter",
+  "$id": "https://github.com/CilantroFanatic/ai-baton/schemas/memory-frontmatter.schema.json",
+  "title": "ai-baton memory frontmatter",
   "description": "Frontmatter schema for files under memory/, per SPEC.md section 5.",
   "type": "object",
   "properties": {

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from ai_handoff_protocol.commands import validate
+from ai_baton.commands import validate
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEMO_PROJECT = REPO_ROOT / "examples" / "demo-project"

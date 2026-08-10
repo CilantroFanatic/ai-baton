@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from ai_handoff_protocol.commands import status
+from ai_baton.commands import status
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEMO_PROJECT = REPO_ROOT / "examples" / "demo-project"

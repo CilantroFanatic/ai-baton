@@ -5,12 +5,12 @@ from a local checkout:
 
 ```bash
 git clone <this-repo>
-cd ai-handoff-protocol
+cd ai-baton
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 ```
 
-If `import ai_handoff_protocol` fails right after that with
+If `import ai_baton` fails right after that with
 `ModuleNotFoundError` despite `pip` reporting success, your venv isn't
 processing `.pth` files (seen on at least one machine) — see
 `CONTRIBUTING.md`'s note for the `pip install .` (no `-e`) workaround.
@@ -18,7 +18,7 @@ processing `.pth` files (seen on at least one machine) — see
 ## Start a new project
 
 ```bash
-ai-handoff-protocol init my-project
+ai-baton init my-project
 cd my-project
 ```
 
@@ -45,7 +45,7 @@ Updated by: you
 ## Hand a session off (to yourself later, or to a different AI tool)
 
 ```bash
-ai-handoff-protocol status my-project
+ai-baton status my-project
 ```
 
 Prints `PROTOCOL.md` + `memory/INDEX.md` + `status/CURRENT_STATUS.md`, in
@@ -57,7 +57,7 @@ there's no dependency on any of them specifically.
 ## Check you haven't broken the protocol's own rules
 
 ```bash
-ai-handoff-protocol validate my-project
+ai-baton validate my-project
 ```
 
 Checks: required directories exist, `PROTOCOL.md` and
@@ -76,8 +76,8 @@ compatible tools look for it, user-wide so it works across every project:
 
 ```bash
 mkdir -p ~/.claude/skills ~/.agents/skills
-ln -s "$(pwd)/.agents/skills/ai-handoff-protocol" ~/.claude/skills/ai-handoff-protocol
-ln -s "$(pwd)/.agents/skills/ai-handoff-protocol" ~/.agents/skills/ai-handoff-protocol
+ln -s "$(pwd)/.agents/skills/ai-baton" ~/.claude/skills/ai-baton
+ln -s "$(pwd)/.agents/skills/ai-baton" ~/.agents/skills/ai-baton
 ```
 
 `~/.claude/skills/` is Claude Code's lookup path; `~/.agents/skills/` is

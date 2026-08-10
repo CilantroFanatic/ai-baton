@@ -25,4 +25,4 @@ jobs:
         run: uv run pytest
 
       - name: Validate examples/demo-project against the spec
-        run: uv run ai-handoff-protocol validate examples/demo-project
+        run: uv run ai-baton validate examples/demo-project

@@ -10,7 +10,7 @@ capable than this one.
 | **OpenMemory (MCP)** | Local MCP server, Qdrant + SSE | Same extraction as Mem0, exposed to MCP clients (Claude Desktop, Cursor, Windsurf, …) | Medium — local, but still a vector store, not plain text | A locally-running service process + MCP-capable client |
 | **Letta (MemGPT)** | Postgres + pgvector; core memory blocks live in the agent's context | The agent calls `core_memory_*` / `archival_memory_*` tools on itself | Low–medium — memory blocks are readable, but scoped to one Letta agent instance, not a portable file set | Letta's agent runtime/server |
 | **Letta Code** | Built on Letta; memory bound to one long-lived agent | The agent accumulates memory/skills about a working directory over time | Medium — but scoped to a single Letta agent, not shared across independently-run tools like Claude Code / Codex / Cursor | Letta runtime; it's Letta's own CLI product |
-| **ai-handoff-protocol** | Plain text files (Markdown + YAML frontmatter) in a git repo | Explicit writes by a human or an AI following the spec | High — every change is a normal git diff | None (no DB, no vector store, no server) |
+| **ai-baton** | Plain text files (Markdown + YAML frontmatter) in a git repo | Explicit writes by a human or an AI following the spec | High — every change is a normal git diff | None (no DB, no vector store, no server) |
 
 ## What we give up for that trade-off
 
@@ -41,6 +41,6 @@ capable than this one.
 - Adoption doesn't need a per-vendor plugin: the
   [Agent Skills](https://agentskills.io/) open standard (released by
   Anthropic in December 2025) means one `SKILL.md` — this repo ships one at
-  [`.agents/skills/ai-handoff-protocol/`](../.agents/skills/ai-handoff-protocol/SKILL.md) —
+  [`.agents/skills/ai-baton/`](../.agents/skills/ai-baton/SKILL.md) —
   is read the same way by Claude Code, Codex CLI, Cursor, and other tools
   that implement the spec, without a separate integration per tool.

@@ -1,4 +1,4 @@
-# ai-handoff-protocol
+# ai-baton
 
 Portable, auditable, file-first handoff protocol for AI assistants.
 
@@ -22,7 +22,7 @@ extraction. See [`docs/comparison.md`](docs/comparison.md).
 Pre-alpha, not on PyPI yet. Working: the spec (`SPEC.md`), the `init` /
 `validate` / `status` CLI, a full worked example
 (`examples/demo-project/`), and an [Agent Skills](https://agentskills.io/)
-skill (`.agents/skills/ai-handoff-protocol/`) that's been triggered live in
+skill (`.agents/skills/ai-baton/`) that's been triggered live in
 Claude Code but not yet in Codex or Cursor. 16 tests pass locally. Not
 built: PyPI packaging, semantic search (by design), and any automated
 measurement of handoff effectiveness (methodology sketched in
@@ -36,7 +36,7 @@ measurement of handoff effectiveness (methodology sketched in
   Letta / Letta Code.
 - [`docs/metrics.md`](docs/metrics.md) — how we'd measure handoff quality.
 - [`examples/demo-project/`](examples/demo-project/) — worked example.
-- [`.agents/skills/ai-handoff-protocol/SKILL.md`](.agents/skills/ai-handoff-protocol/SKILL.md) —
+- [`.agents/skills/ai-baton/SKILL.md`](.agents/skills/ai-baton/SKILL.md) —
   install once, an AI tool follows the protocol without being reminded.
 
 ## License

@@ -1,6 +1,6 @@
 # PROTOCOL.md — demo-project
 
-Conforms to: ai-handoff-protocol SPEC.md v0.1 (see repo root `SPEC.md` for
+Conforms to: ai-baton SPEC.md v0.1 (see repo root `SPEC.md` for
 full rules). This file is the trimmed, project-local copy referenced by
 `SPEC.md` §3.
 

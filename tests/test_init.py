@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from ai_handoff_protocol.commands import init
+from ai_baton.commands import init
 
 
 def test_init_creates_expected_structure(tmp_path: Path) -> None:

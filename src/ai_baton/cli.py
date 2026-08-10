@@ -11,8 +11,8 @@ from .commands import validate as validate_cmd
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="ai-handoff-protocol",
-        description="Scaffold, validate, and read ai-handoff-protocol projects.",
+        prog="ai-baton",
+        description="Scaffold, validate, and read ai-baton projects.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
