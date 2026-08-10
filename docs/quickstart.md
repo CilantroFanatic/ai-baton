@@ -1,10 +1,18 @@
 # Quickstart
 
-Not published to PyPI yet (see README "Current status") — for now, install
-from a local checkout:
+```bash
+pip install ai-baton-tool
+# or: uvx --from ai-baton-tool ai-baton --help
+```
+
+The PyPI distribution is named `ai-baton-tool` (an unrelated existing
+package blocked the plain `ai-baton` name) but the command is `ai-baton`
+either way.
+
+To work on the code itself instead, install from a local checkout:
 
 ```bash
-git clone <this-repo>
+git clone https://github.com/CilantroFanatic/ai-baton
 cd ai-baton
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
