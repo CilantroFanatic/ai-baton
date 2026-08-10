@@ -35,10 +35,12 @@ name). Working: the spec (`SPEC.md`), the `init` / `validate` / `status` /
 via `ai-baton list`), a full worked example (`examples/demo-project/`),
 and an [Agent Skills](https://agentskills.io/) skill — `ai-baton skill
 install` puts it where Claude Code and Codex CLI look for it, triggered
-live in Claude Code but not yet in Codex or Cursor. 24 tests pass locally.
-Not built: semantic search (by design) and any automated measurement of
-handoff effectiveness (methodology sketched in `docs/metrics.md`, nothing
-wired up).
+live in Claude Code but not yet in Codex or Cursor. `validate` also flags
+well-known credential formats (AWS/GitHub/Slack keys, private key blocks)
+as a heuristic safety net, not a full secrets scanner. 28 tests pass
+locally. Not built: semantic search (by design) and any automated
+measurement of handoff effectiveness (methodology sketched in
+`docs/metrics.md`, nothing wired up).
 
 ## Quick orientation
 

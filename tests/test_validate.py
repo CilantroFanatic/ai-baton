@@ -81,6 +81,52 @@ def test_stale_status_is_a_warning_not_an_error(tmp_path: Path) -> None:
     assert any("stale" in w for w in result.warnings)
 
 
+def test_aws_key_pattern_is_flagged(tmp_path: Path) -> None:
+    _scaffold_minimum(tmp_path)
+    (tmp_path / "evidence" / "notes.md").write_text(
+        "accidentally pasted: AKIAIOSFODNN7EXAMPLE\n"
+    )
+
+    result = validate.run(tmp_path)
+
+    assert any("AWS Access Key ID" in e for e in result.errors)
+
+
+def test_private_key_block_is_flagged(tmp_path: Path) -> None:
+    _scaffold_minimum(tmp_path)
+    (tmp_path / "evidence" / "notes.md").write_text(
+        "-----BEGIN RSA PRIVATE KEY-----\nMIIExample==\n-----END RSA PRIVATE KEY-----\n"
+    )
+
+    result = validate.run(tmp_path)
+
+    assert any("PEM private key block" in e for e in result.errors)
+
+
+def test_secret_value_is_never_echoed_in_the_error(tmp_path: Path) -> None:
+    _scaffold_minimum(tmp_path)
+    secret = "AKIAIOSFODNN7EXAMPLE"
+    (tmp_path / "evidence" / "notes.md").write_text(f"key: {secret}\n")
+
+    result = validate.run(tmp_path)
+
+    assert not any(secret in e for e in result.errors)
+    assert any("redacted" in e for e in result.errors)
+
+
+def test_ordinary_content_does_not_false_positive_as_a_secret(tmp_path: Path) -> None:
+    _scaffold_minimum(tmp_path)
+    (tmp_path / "evidence" / "notes.md").write_text(
+        "Normal notes about the project, a UUID like "
+        "550e8400-e29b-41d4-a716-446655440000, and a sentence with the "
+        "word skeleton in it.\n"
+    )
+
+    result = validate.run(tmp_path)
+
+    assert result.ok
+
+
 def test_unrelated_sibling_content_is_not_scanned(tmp_path: Path) -> None:
     # Regression test: a real user ran `ai-baton init` directly on a large,
     # pre-existing directory (their whole ~/Documents) that also contained

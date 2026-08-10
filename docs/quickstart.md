@@ -73,8 +73,12 @@ ai-baton validate ~/ai-baton-workspace/my-project # check frontmatter, links, st
 `validate` checks: required directories exist, `PROTOCOL.md` and
 `status/CURRENT_STATUS.md` exist and aren't empty, every file under
 `memory/` has frontmatter matching `schemas/memory-frontmatter.schema.json`,
-internal links resolve, and `CURRENT_STATUS.md` isn't more than 30 days
-stale (a warning, not a hard failure).
+internal links resolve, `CURRENT_STATUS.md` isn't more than 30 days stale
+(a warning, not a hard failure), and none of the protocol's own files
+match a well-known credential format (AWS/GitHub/Slack keys, PEM private
+key blocks, JWT-looking tokens) per SPEC.md section 6.6 — a heuristic
+safety net for obvious cases, not a substitute for not pasting secrets in
+the first place.
 
 `skill install` also accepts explicit paths instead of the two global
 defaults, e.g. to scope it to one project:

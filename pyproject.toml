@@ -1,6 +1,6 @@
 [project]
 name = "ai-baton-tool"
-version = "0.0.6"
+version = "0.0.7"
 description = "Portable, auditable, file-first handoff protocol for AI assistants."
 readme = "README.md"
 license = { text = "MIT" }

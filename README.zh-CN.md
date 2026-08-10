@@ -12,7 +12,7 @@
 
 ## 现状
 
-Pre-alpha。`pip install ai-baton-tool`(PyPI 上的发行包名跟 `ai-baton` 命令不一样——名字被一个不相关的已有包占了)。已经跑通的:协议规范(`SPEC.md`)、`init`/`validate`/`status`/`list`/`skill install` 这几个 CLI 命令、一套默认工作区约定(`~/ai-baton-workspace/<项目名>/`,换工具/换会话时靠 `ai-baton list` 就能发现已有项目)、一个完整的示例项目(`examples/demo-project/`)、一份 [Agent Skills](https://agentskills.io/) skill——`ai-baton skill install` 会把它放到 Claude Code 和 Codex CLI 会找的位置,在 Claude Code 里现场验证过触发,Codex 和 Cursor 里还没试过。24 个测试本地全过。还没做的:语义搜索(有意不做)、任何自动化的交接效果量化(方法论写在 `docs/metrics.md` 里,还没接进代码)。
+Pre-alpha。`pip install ai-baton-tool`(PyPI 上的发行包名跟 `ai-baton` 命令不一样——名字被一个不相关的已有包占了)。已经跑通的:协议规范(`SPEC.md`)、`init`/`validate`/`status`/`list`/`skill install` 这几个 CLI 命令、一套默认工作区约定(`~/ai-baton-workspace/<项目名>/`,换工具/换会话时靠 `ai-baton list` 就能发现已有项目)、一个完整的示例项目(`examples/demo-project/`)、一份 [Agent Skills](https://agentskills.io/) skill——`ai-baton skill install` 会把它放到 Claude Code 和 Codex CLI 会找的位置,在 Claude Code 里现场验证过触发,Codex 和 Cursor 里还没试过。`validate` 还会检测常见凭证格式(AWS/GitHub/Slack key、私钥块)作为一道启发式安全网,不是完整的密钥扫描工具。28 个测试本地全过。还没做的:语义搜索(有意不做)、任何自动化的交接效果量化(方法论写在 `docs/metrics.md` 里,还没接进代码)。
 
 ## 快速上手
 
