@@ -10,10 +10,10 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 ```
 
-If `import ai_baton` fails right after that with
-`ModuleNotFoundError` despite `pip` reporting success, your venv isn't
-processing `.pth` files (seen on at least one machine) — see
-`CONTRIBUTING.md`'s note for the `pip install .` (no `-e`) workaround.
+If `import ai_baton` fails right after that with `ModuleNotFoundError`
+despite `pip` reporting success, your venv isn't processing `.pth` files
+(seen on at least one machine) — use `pip install .` (no `-e`) instead, or
+run with `PYTHONPATH=src`.
 
 ## Start a new project
 
