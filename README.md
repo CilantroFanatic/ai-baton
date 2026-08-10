@@ -21,13 +21,14 @@ extraction. See [`docs/comparison.md`](docs/comparison.md).
 
 Pre-alpha. `pip install ai-baton-tool` (PyPI distribution name differs
 from the `ai-baton` command — an existing unrelated package blocked that
-name). Working: the spec (`SPEC.md`), the `init` / `validate` / `status`
-CLI, a full worked example (`examples/demo-project/`), and an
-[Agent Skills](https://agentskills.io/) skill
-(`.agents/skills/ai-baton/`) triggered live in Claude Code but not yet in
-Codex or Cursor. 16 tests pass locally. Not built: semantic search (by
-design) and any automated measurement of handoff effectiveness
-(methodology sketched in `docs/metrics.md`, nothing wired up).
+name). Working: the spec (`SPEC.md`), the `init` / `validate` / `status` /
+`skill install` CLI, a full worked example (`examples/demo-project/`), and
+an [Agent Skills](https://agentskills.io/) skill — `ai-baton skill
+install` puts it where Claude Code and Codex CLI look for it, triggered
+live in Claude Code but not yet in Codex or Cursor. 19 tests pass locally.
+Not built: semantic search (by design) and any automated measurement of
+handoff effectiveness (methodology sketched in `docs/metrics.md`, nothing
+wired up).
 
 ## Quick orientation
 

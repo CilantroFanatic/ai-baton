@@ -78,19 +78,22 @@ your project).
 
 ## Let an AI follow the protocol without being reminded
 
-Symlink the skill (not a copy — one canonical file, no drift between
-installed locations) into wherever [Agent Skills](https://agentskills.io/)-
-compatible tools look for it, user-wide so it works across every project:
-
 ```bash
-mkdir -p ~/.claude/skills ~/.agents/skills
-ln -s "$(pwd)/.agents/skills/ai-baton" ~/.claude/skills/ai-baton
-ln -s "$(pwd)/.agents/skills/ai-baton" ~/.agents/skills/ai-baton
+ai-baton skill install
 ```
 
-`~/.claude/skills/` is Claude Code's lookup path; `~/.agents/skills/` is
-the shared convention Codex CLI also scans. Tested live in Claude Code
-(triggers immediately). Not yet tested in Codex or Cursor.
+Writes `SKILL.md` into `~/.claude/skills/ai-baton/` (Claude Code's own
+lookup path) and `~/.agents/skills/ai-baton/` (the shared
+[Agent Skills](https://agentskills.io/) convention Codex CLI also scans),
+user-wide so it works across every project. Pass one or more paths instead
+to install somewhere else, e.g. a project-local `.agents/skills`:
+
+```bash
+ai-baton skill install my-project/.agents/skills
+```
+
+Tested live in Claude Code (triggers immediately). Not yet tested in Codex
+or Cursor.
 
 Once installed, the AI notices when a directory already has a
 `PROTOCOL.md` and reads it first, or asks whether to start a new project

@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 
 from .commands import init as init_cmd
+from .commands import skill as skill_cmd
 from .commands import status as status_cmd
 from .commands import validate as validate_cmd
 
@@ -37,12 +38,34 @@ def build_parser() -> argparse.ArgumentParser:
         "path", nargs="?", default=".", help="Project directory (default: current directory)."
     )
 
+    skill_parser = subparsers.add_parser(
+        "skill", help="Install the Agent Skills SKILL.md so an AI tool follows the protocol automatically."
+    )
+    skill_subparsers = skill_parser.add_subparsers(dest="skill_command", required=True)
+    skill_install_parser = skill_subparsers.add_parser(
+        "install",
+        help="Write SKILL.md into skills/ directories (default: the global Claude Code and Agent Skills locations).",
+    )
+    skill_install_parser.add_argument(
+        "targets",
+        nargs="*",
+        help="Base directories to install into (each gets <target>/ai-baton/SKILL.md). "
+        "Default: ~/.claude/skills and ~/.agents/skills.",
+    )
+
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+
+    if args.command == "skill" and args.skill_command == "install":
+        targets = [Path(t).resolve() for t in args.targets] or None
+        for message in skill_cmd.install(targets):
+            print(message)
+        return 0
+
     target = Path(args.path).resolve()
 
     if args.command == "init":
