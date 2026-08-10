@@ -14,4 +14,3 @@ v2 HTTP client usage, ahead of the v2 → v3 migration.
 This is the evidence `../memory/0001-migration-strategy.md` cites as its
 `source`.
 
-(Fictional example content.)

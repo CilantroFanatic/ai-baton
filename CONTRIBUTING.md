@@ -8,8 +8,8 @@ there isn't much code yet. A few ground rules while that's true:
   Propose spec changes as their own PR/issue, separate from CLI changes,
   with the reasoning written out.
 - Don't claim a feature is implemented in `README.md` until it actually is.
-  The "Current status" checklist in the README is the source of truth for
-  what exists; keep it in sync with reality.
+  The "Status" section is the source of truth for what exists; keep it in
+  sync with reality.
 - Keep the CLI's dependency footprint small. The whole point of this
   protocol is that it doesn't require infrastructure — a CLI with a heavy
   dependency tree undermines that.
@@ -34,13 +34,8 @@ pip install . pytest   # not -e — see note below
 pytest
 ```
 
-**Editable installs (`pip install -e .`) may silently fail to import** on
-some setups: the CLI package uses hatchling's default editable mode, which
-relies on a `.pth` file adding `src/` to `sys.path`. On at least one tested
-machine (a conda-derived `venv`), `.pth` files placed in that venv's
-`site-packages` were never processed by the `site` module — verified by
-testing a trivial unrelated `.pth` file, not specific to this package — so
-`import ai_handoff_protocol` failed even though `pip install -e .` reported
-success. If you hit `ModuleNotFoundError: No module named
-'ai_handoff_protocol'` right after an editable install, use a regular
-install (`pip install .`, no `-e`) instead, or run with `PYTHONPATH=src`.
+**Editable installs (`pip install -e .`) can silently fail to import** on
+some setups — a conda-derived `venv` we tested doesn't process `.pth`
+files, so `pip install -e .` reports success but `import
+ai_handoff_protocol` fails. If you hit that, use `pip install .` (no `-e`)
+or run with `PYTHONPATH=src`.

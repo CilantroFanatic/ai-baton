@@ -22,4 +22,3 @@ Kept here (not deleted) per SPEC.md section 3.5/6.4 — it's the reasoning
 trail for why the current approach was chosen, not just the current
 approach itself.
 
-(Fictional example content.)

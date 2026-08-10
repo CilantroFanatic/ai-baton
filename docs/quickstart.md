@@ -80,22 +80,14 @@ ln -s "$(pwd)/.agents/skills/ai-handoff-protocol" ~/.claude/skills/ai-handoff-pr
 ln -s "$(pwd)/.agents/skills/ai-handoff-protocol" ~/.agents/skills/ai-handoff-protocol
 ```
 
-`~/.claude/skills/` is Claude Code's own lookup path; `~/.agents/skills/`
-is the newer shared convention Codex CLI (and reportedly others) scan too.
-Installing both costs nothing and doesn't assume either one is redundant.
+`~/.claude/skills/` is Claude Code's lookup path; `~/.agents/skills/` is
+the shared convention Codex CLI also scans. Tested live in Claude Code
+(triggers immediately). Not yet tested in Codex or Cursor.
 
-**Verified vs. not verified:** the `~/.claude/skills/` install was tested
-live in an actual Claude Code session — calling the skill picked it up
-immediately, no restart needed. The `~/.agents/skills/` path for Codex CLI
-is only confirmed by documentation research, not by actually running Codex
-here. If you try it in Codex and it doesn't trigger, that's a real gap to
-report, not a misunderstanding on your end.
-
-With this installed, the AI should, on its own: notice when you're working
-in a directory that already has a `PROTOCOL.md` and read it first, or ask
-whether to start a new ai-handoff-protocol project when it's not obvious
-which one you mean — useful if you keep several going at once (one per
-exam, one per thesis, etc.) and don't want them bleeding into each other.
+Once installed, the AI notices when a directory already has a
+`PROTOCOL.md` and reads it first, or asks whether to start a new project
+when that's not obvious — handy if you're running several projects at
+once (one per exam, one for a thesis) and don't want them mixed up.
 
 ## See it end to end
 

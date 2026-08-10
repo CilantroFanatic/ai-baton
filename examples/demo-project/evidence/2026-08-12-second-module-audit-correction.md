@@ -16,4 +16,3 @@ read-only" detail needs a dated correction rather than being left as
 written, per SPEC.md section 6.3 (new evidence contradicting an existing
 memory entry gets a dated correction, not a silent rewrite).
 
-(Fictional example content.)

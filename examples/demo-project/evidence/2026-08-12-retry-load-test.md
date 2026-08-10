@@ -17,4 +17,3 @@ No behavior difference observed across 200 runs.
 This is the evidence `../memory/0002-adapter-retry-shape.md` cites for
 promoting its `confidence` from `unverified` to `verified`.
 
-(Fictional example content.)

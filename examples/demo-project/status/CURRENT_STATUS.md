@@ -30,4 +30,3 @@ Migrate `northwind-api` from v2 to v3, module by module (see
 2. Re-check the remaining unmigrated modules' read/write classification
    against the source, not just the 2026-08-10 audit.
 
-(Fictional example content.)

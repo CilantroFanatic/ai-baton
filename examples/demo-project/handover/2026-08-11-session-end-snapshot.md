@@ -28,4 +28,3 @@ context than the status file's terse "next steps" line gives.
 - No modules have actually been migrated behind the adapter yet — only the
   adapter itself exists so far.
 
-(Fictional example content.)

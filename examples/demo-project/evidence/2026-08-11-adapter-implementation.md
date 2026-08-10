@@ -17,4 +17,3 @@ before. Recording this as `confidence: unverified` in
 `../memory/0002-adapter-retry-shape.md` rather than assuming the
 translation is correct.
 
-(Fictional example content.)
