@@ -18,11 +18,29 @@ there isn't much code yet. A few ground rules while that's true:
 
 ## Development
 
-This project targets Python + `uv`. Once the CLI package exists:
+This project targets Python + `uv`:
 
 ```bash
 uv sync
 uv run pytest
+uv run ai-handoff-protocol validate examples/demo-project
 ```
 
-(Not wired up yet — see README "Current status".)
+If `uv` isn't available, a plain venv works too:
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install . pytest   # not -e — see note below
+pytest
+```
+
+**Editable installs (`pip install -e .`) may silently fail to import** on
+some setups: the CLI package uses hatchling's default editable mode, which
+relies on a `.pth` file adding `src/` to `sys.path`. On at least one tested
+machine (a conda-derived `venv`), `.pth` files placed in that venv's
+`site-packages` were never processed by the `site` module — verified by
+testing a trivial unrelated `.pth` file, not specific to this package — so
+`import ai_handoff_protocol` failed even though `pip install -e .` reported
+success. If you hit `ModuleNotFoundError: No module named
+'ai_handoff_protocol'` right after an editable install, use a regular
+install (`pip install .`, no `-e`) instead, or run with `PYTHONPATH=src`.

@@ -49,13 +49,17 @@ Implemented:
       (verified locally via a venv; `uv` wasn't available in this
       environment to test the exact CI command path).
 
+- [x] `examples/demo-project/` — a fictional but fully worked three-session
+      walkthrough (two different AI tools handing a migration project back
+      and forth) exercising confidence promotion, an in-place correction,
+      `archive/`, and `handover/`. Passes `validate` clean; is what CI
+      checks on every push.
+
 Not implemented / not yet true — don't assume otherwise:
-- [ ] Not published to PyPI. `uvx ai-handoff-protocol` will not work yet;
-      only a local editable install does.
-- [ ] `examples/demo-project` is a single static snapshot (one memory
-      entry, one evidence entry) that validates cleanly, but it does not
-      yet demonstrate an actual multi-session, multi-tool handoff — that
-      walkthrough is still planned (Day 3).
+- [ ] Not published to PyPI. `uvx ai-handoff-protocol` will not work yet —
+      see [`docs/quickstart.md`](docs/quickstart.md) for installing from a
+      local checkout instead (and a known editable-install gotcha on some
+      setups).
 - [ ] No semantic search, no automatic fact extraction (by design — see
       `docs/comparison.md` — not a gap to be filled later).
 - [ ] Any quantitative handoff-effectiveness measurement (see
@@ -64,13 +68,15 @@ Not implemented / not yet true — don't assume otherwise:
 
 ## Quick orientation
 
+- [`docs/quickstart.md`](docs/quickstart.md) — install and try the three
+  CLI commands.
 - [`SPEC.md`](SPEC.md) — the protocol itself.
 - [`docs/comparison.md`](docs/comparison.md) — how this differs from
   Mem0 / OpenMemory / Letta / Letta Code, including honest limitations.
 - [`docs/metrics.md`](docs/metrics.md) — how we plan to measure whether
   cross-AI handoff actually works, once there's something to measure.
-- [`examples/demo-project/`](examples/demo-project/) — a fictional example
-  project structured per the spec (skeleton only for now).
+- [`examples/demo-project/`](examples/demo-project/) — the worked example,
+  narrated in its own README.
 
 ## License
 

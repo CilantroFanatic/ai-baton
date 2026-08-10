@@ -1,28 +1,60 @@
 # demo-project (fictional example)
 
-**Status: structure only.** This directory shows the shape a project takes
-under `ai-handoff-protocol` v0.1 — it is not yet a complete, runnable
-walkthrough. Filling it in with a full multi-session scenario is Day 3 work
-(see `docs/PHASE1_DESIGN.md` in the repo root).
+A worked, multi-session example of `ai-handoff-protocol` v0.1, entirely
+fictional: a small team migrating a library called `northwind-api` from v2
+to v3, handed between two different AI coding assistants across three
+sessions. Not based on any real project or real data.
 
-## Scenario
+Validate it yourself:
 
-Entirely fictional, for demonstration only: a small team is migrating a
-library called `northwind-api` from v2 to v3 across several sessions,
-switching between two different AI coding assistants. This is a stand-in
-for "any long-running project handed between AI tools" — it is not based on
-any real project or real data.
+```bash
+ai-handoff-protocol validate examples/demo-project
+ai-handoff-protocol status examples/demo-project
+```
 
-## What's here so far
+## The narrative
 
-- `PROTOCOL.md` — the read-order/update rules a session should follow in
-  this project.
-- `memory/` — one example long-term-memory entry, plus an index.
-- `status/CURRENT_STATUS.md` — one example current-state snapshot.
-- `evidence/` — one example dated evidence entry.
-- `handover/`, `archive/` — present per spec, currently empty (no snapshot
-  or superseded content exists yet in this fictional timeline).
+**Session 1 — 2026-08-10 (tool A).** Audits the codebase
+(`evidence/2026-08-10-dependency-audit.md`), considers and rejects a
+big-bang rewrite (`archive/0000-rejected-bigbang-plan.md`), decides on a
+module-by-module migration behind an adapter
+(`memory/0001-migration-strategy.md`).
 
-Once the CLI's `validate` command exists (Day 2), this directory becomes the
-thing CI runs `validate` against, so the spec and the example can't drift
-apart silently.
+**Session 2 — 2026-08-11 (tool B, a different AI tool).** Picks the project
+up cold — in a real session this would start with `ai-handoff-protocol
+status .`, which prints `PROTOCOL.md` + `memory/INDEX.md` +
+`status/CURRENT_STATUS.md` in the order SPEC.md section 4 requires. Builds
+the HTTP client adapter (`evidence/2026-08-11-adapter-implementation.md`),
+but isn't sure the retry/backoff translation is correct under connection
+pool exhaustion, so records that as `confidence: unverified` rather than
+asserting it
+(`memory/0002-adapter-retry-shape.md`). Leaves a full point-in-time
+handover snapshot before the session ends
+(`handover/2026-08-11-session-end-snapshot.md`).
+
+**Session 3 — 2026-08-12 (back to tool A).** Re-reads the mandatory files,
+runs the load test that was flagged as missing, confirms the adapter's
+retry behavior is correct
+(`evidence/2026-08-12-retry-load-test.md`), and promotes
+`memory/0002-adapter-retry-shape.md` from `unverified` to `verified` —
+*in place*, with a dated note, not as a new file. While migrating the
+second module, finds the original audit undercounted which modules do
+writes (`evidence/2026-08-12-second-module-audit-correction.md`) and
+appends a dated correction to `memory/0001-migration-strategy.md` instead
+of silently rewriting it, per SPEC.md section 6.3.
+
+## What this demonstrates
+
+- Cross-tool handoff via `status/CURRENT_STATUS.md` +
+  `memory/INDEX.md`, not shared chat history.
+- `confidence: unverified` → `verified` promotion gated on a specific
+  tested outcome (SPEC.md §6.2/§6.5), not "looked fine to me."
+- Conflicting new evidence correcting an existing `memory/` entry in place,
+  with the old evidence kept intact (SPEC.md §6.3).
+- `archive/` holding a rejected approach instead of deleting it (SPEC.md
+  §3.5/§6.4).
+- `handover/` holding a full point-in-time snapshot, separate from the
+  terser `status/CURRENT_STATUS.md`.
+
+Once the CLI's `validate` command runs in CI, this directory is what CI
+checks against, so the spec and the example can't drift apart silently.
