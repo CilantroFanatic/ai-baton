@@ -1,0 +1,124 @@
+from __future__ import annotations
+
+import datetime as _dt
+import json
+import re
+from dataclasses import dataclass, field
+from datetime import date as date_cls
+from pathlib import Path
+
+import yaml
+from jsonschema import Draft7Validator
+
+REQUIRED_DIRS = ["memory", "status", "evidence", "handover", "archive"]
+SCHEMA_PATH = Path(__file__).resolve().parent.parent / "schemas" / "memory-frontmatter.schema.json"
+
+STALE_STATUS_DAYS = 30
+
+FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?\n)---\s*\n?", re.DOTALL)
+LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+
+
+@dataclass
+class Result:
+    errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+
+    @property
+    def ok(self) -> bool:
+        return not self.errors
+
+
+def run(target: Path) -> Result:
+    result = Result()
+    _check_required_dirs(target, result)
+    _check_protocol_file(target, result)
+    _check_current_status(target, result)
+    _check_memory_frontmatter(target, result)
+    _check_internal_links(target, result)
+    return result
+
+
+def _check_required_dirs(target: Path, result: Result) -> None:
+    for name in REQUIRED_DIRS:
+        if not (target / name).is_dir():
+            result.errors.append(f"missing required directory: {name}/")
+
+
+def _check_protocol_file(target: Path, result: Result) -> None:
+    if not (target / "PROTOCOL.md").is_file():
+        result.errors.append("missing PROTOCOL.md")
+
+
+def _check_current_status(target: Path, result: Result) -> None:
+    status_file = target / "status" / "CURRENT_STATUS.md"
+    if not status_file.is_file():
+        result.errors.append("missing status/CURRENT_STATUS.md")
+        return
+
+    text = status_file.read_text(encoding="utf-8")
+    if not text.strip():
+        result.errors.append("status/CURRENT_STATUS.md is empty")
+        return
+
+    match = re.search(r"Last updated:\s*(\d{4}-\d{2}-\d{2})", text)
+    if not match:
+        result.warnings.append(
+            "status/CURRENT_STATUS.md has no 'Last updated: YYYY-MM-DD' line"
+        )
+        return
+
+    last_updated = date_cls.fromisoformat(match.group(1))
+    age_days = (date_cls.today() - last_updated).days
+    if age_days > STALE_STATUS_DAYS:
+        result.warnings.append(
+            f"status/CURRENT_STATUS.md last updated {last_updated.isoformat()} "
+            f"({age_days} days ago) — may be stale"
+        )
+
+
+def _check_memory_frontmatter(target: Path, result: Result) -> None:
+    memory_dir = target / "memory"
+    if not memory_dir.is_dir():
+        return
+
+    schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+    validator = Draft7Validator(schema)
+
+    for path in sorted(memory_dir.rglob("*.md")):
+        text = path.read_text(encoding="utf-8")
+        rel = path.relative_to(target)
+        match = FRONTMATTER_RE.match(text)
+        if not match:
+            result.errors.append(f"{rel}: missing YAML frontmatter")
+            continue
+        try:
+            data = yaml.safe_load(match.group(1)) or {}
+        except yaml.YAMLError as exc:
+            result.errors.append(f"{rel}: invalid YAML frontmatter ({exc})")
+            continue
+        # YAML auto-parses unquoted YYYY-MM-DD scalars into date objects;
+        # the schema (and the spec) treat `date` as a plain string.
+        if isinstance(data, dict):
+            for key, value in data.items():
+                if isinstance(value, (_dt.date, _dt.datetime)):
+                    data[key] = value.isoformat()
+        for err in sorted(validator.iter_errors(data), key=str):
+            result.errors.append(f"{rel}: {err.message}")
+
+
+def _check_internal_links(target: Path, result: Result) -> None:
+    for path in sorted(target.rglob("*.md")):
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8")
+        rel = path.relative_to(target)
+        for link in LINK_RE.findall(text):
+            if "://" in link or link.startswith("#") or link.startswith("mailto:"):
+                continue
+            link_path = link.split("#", 1)[0].strip()
+            if not link_path:
+                continue
+            resolved = (path.parent / link_path).resolve()
+            if not resolved.exists():
+                result.errors.append(f"{rel}: broken link to '{link}'")

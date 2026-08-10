@@ -1,0 +1,31 @@
+# PROTOCOL.md
+
+Conforms to: ai-handoff-protocol SPEC.md v0.1.
+
+## Read this before doing anything
+
+1. This file.
+2. `memory/INDEX.md`.
+3. `status/CURRENT_STATUS.md`.
+4. Whatever directory matches your current task.
+
+If you suspect you're working from a compacted/summarized context (context
+window compaction, resumed session, a different tool entirely), re-read
+1-3 before continuing. Do not act on a remembered summary that might be
+stale or fabricated.
+
+## Rules
+
+- Absolute dates only (`YYYY-MM-DD`), never "today"/"tomorrow" — those
+  expire and mislead the next session.
+- Unverified content is tagged `confidence: unverified` in `memory/`
+  frontmatter, not written as if it were confirmed fact.
+- New evidence that contradicts an existing `memory/` entry updates that
+  entry with a dated correction; the old evidence stays in `evidence/`
+  untouched — nothing is silently deleted or overwritten without a trace.
+- Superseded content moves to `archive/`, it is not deleted.
+- No credentials, API keys, or tokens in any file here.
+
+## Project-specific rules
+
+(none yet — add project-specific exceptions or conventions here)
