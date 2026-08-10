@@ -23,22 +23,24 @@ That's it. From here you just talk to your AI tool normally.
 
 Say something like "start a new memory project for my thesis" or "pick up
 where we left off on the exam-prep project." The AI — per the skill it
-just read — asks where (new project) or notices the existing
-`PROTOCOL.md` (continuing one), then runs `ai-baton init` / `validate` /
-`status` on your behalf. You shouldn't need to type any of those commands
-yourself; they're what the AI runs, not what you run.
+just read — checks `~/ai-baton-workspace/` for existing projects (via
+`ai-baton list`), asks which one you mean or offers to start a new one,
+then runs `ai-baton init` / `validate` / `status` on your behalf. You
+shouldn't need to type any of those commands yourself; they're what the AI
+runs, not what you run.
+
+Every project gets its own named subdirectory under the workspace —
+`~/ai-baton-workspace/thesis/`, `~/ai-baton-workspace/ielts-prep/`, and so
+on — never dumped loose into the workspace root or into some other
+general-purpose folder you already use for other things. A real early user
+had `ai-baton init` pointed straight at their whole `~/Documents`, which
+mixed protocol files in with every other unrelated project sitting there;
+fixed by making the workspace convention explicit in the skill (SKILL.md
+Step 1 and Step 2a.1).
 
 Verified live in Claude Code: install the skill, ask it to start or
 continue a project, and it follows the read-order/update rules
 automatically. Not yet tested in Codex CLI or Cursor.
-
-If you name a general-purpose folder you already use for other things
-("put it in Documents"), the AI should create a new, project-named
-subdirectory inside it rather than scaffolding directly into it — a real
-early user had `ai-baton init` pointed straight at their whole `~/Documents`,
-which mixed protocol files in with every other unrelated project sitting
-there. Fixed by making this explicit in the skill's instructions
-(SKILL.md Step 2a.1a).
 
 If your AI tool doesn't have shell access to run the CLI itself, or
 `ai-baton` isn't installed yet, the skill tells it to create the
@@ -50,6 +52,7 @@ instead — same result either way.
 For driving it directly — CI, scripts, or without an AI in the loop:
 
 ```bash
+ai-baton list                   # show projects under ~/ai-baton-workspace (or pass a different dir)
 ai-baton init my-project        # scaffold the structure
 ai-baton status my-project      # print PROTOCOL.md + memory/INDEX.md + CURRENT_STATUS.md, in read order
 ai-baton validate my-project    # check frontmatter, links, staleness

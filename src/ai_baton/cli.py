@@ -8,6 +8,7 @@ from .commands import init as init_cmd
 from .commands import skill as skill_cmd
 from .commands import status as status_cmd
 from .commands import validate as validate_cmd
+from .commands import workspace as workspace_cmd
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -53,6 +54,16 @@ def build_parser() -> argparse.ArgumentParser:
         "Default: ~/.claude/skills and ~/.agents/skills.",
     )
 
+    list_parser = subparsers.add_parser(
+        "list", help="List ai-baton projects found under a workspace directory."
+    )
+    list_parser.add_argument(
+        "workspace",
+        nargs="?",
+        default=None,
+        help="Workspace directory to scan (default: ~/ai-baton-workspace).",
+    )
+
     return parser
 
 
@@ -64,6 +75,12 @@ def main(argv: list[str] | None = None) -> int:
         targets = [Path(t).resolve() for t in args.targets] or None
         for message in skill_cmd.install(targets):
             print(message)
+        return 0
+
+    if args.command == "list":
+        workspace = Path(args.workspace).resolve() if args.workspace else None
+        for line in workspace_cmd.list_projects(workspace):
+            print(line)
         return 0
 
     target = Path(args.path).resolve()

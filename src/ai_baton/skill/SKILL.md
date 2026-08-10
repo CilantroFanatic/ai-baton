@@ -33,47 +33,63 @@ an offer, not something to do silently in the background.
 
 ## Step 1 — figure out which project this is, before doing anything else
 
-Check the directory the user is pointing at (or the current working
-directory, if none was named):
+If the user named or is obviously pointing at a specific directory, check
+that directory for `PROTOCOL.md` and skip to the outcome below. Otherwise,
+don't guess and don't ask blind — **check the default workspace first**:
 
-- **If it already has a `PROTOCOL.md`**: this is an existing
-  ai-baton project. Go to Step 2 (Existing project). Don't ask —
-  the file's presence is the answer.
-- **If it doesn't, and the user's intent isn't already obvious from what
-  they just said**: ask directly. Don't guess and don't silently create
-  something. For example:
+```
+ai-baton list
+```
 
-  > "接着做已有的记忆项目,还是新开一个?接着做的话告诉我目录;新开的话告诉我叫什么名字、放哪。"
+(scans `~/ai-baton-workspace/` — cross-platform, resolved by the CLI, not
+something you need to construct by hand. No CLI available? List that
+directory yourself the same way: subdirectories containing `PROTOCOL.md`
+are existing projects.)
+
+- **The workspace has one or more projects**: show them to the user (name
+  + whatever current-goal line `list` printed) and ask which one, or
+  whether this is a new one. This is what lets someone switch to a
+  different AI tool later and actually find their existing projects
+  instead of having to remember and retype a path.
+- **The workspace is empty or doesn't exist yet, and a specific directory
+  wasn't named**: this is a new project. Go to Step 2a — it defaults new
+  projects into the workspace automatically.
+- **A `PROTOCOL.md` was found** (in a named directory, or picked from the
+  workspace list): existing project. Go to Step 2b. Don't ask — the file's
+  presence is the answer.
+- **None of the above resolved it** (e.g. multiple candidates and the
+  user's intent still isn't clear): ask directly, don't guess. For
+  example:
+
+  > "接着做已有的记忆项目,还是新开一个?接着做的话告诉我是哪个;新开的话告诉我叫什么名字。"
   > ("Continuing an existing memory project, or starting a new one? If
-  > continuing, which directory? If new, what should it be called and where
-  > should it live?")
+  > continuing, which one? If new, what should it be called?")
 
-  If the user has multiple ai-baton projects going (e.g. one per
-  exam, one for a thesis), this is the moment that keeps them from getting
-  mixed together — don't assume which one "the project" means.
+  If the user has multiple ai-baton projects going (e.g. one per exam, one
+  for a thesis), this is the moment that keeps them from getting mixed
+  together — don't assume which one "the project" means.
 
 ## Step 2a — New project
 
-1. **Get an explicit target directory path from the user before creating
-   anything.** Never default to the current directory, a guessed path, or
-   anything the user didn't actually say — if Step 1's question didn't
-   already get a path, ask for one now and wait for the answer. Creating a
-   new project in the wrong place is exactly the "mixed together" problem
-   Step 1 exists to prevent.
-1a. **What the user names is almost always a *container*, not the project
-   root itself — create a new, project-named subdirectory inside it, don't
-   scaffold directly into the folder they named.** If they say "put it in
-   Documents" / "in my home folder" / "wherever," that's a pre-existing,
-   general-purpose directory that already has unrelated stuff in it (other
-   projects, `node_modules/`, whatever) — dumping `PROTOCOL.md` and friends
-   straight into it pollutes it and breaks `validate`/`skill` scripting for
-   everything else living there too. Pick or confirm a project-specific
-   subdirectory name with the user (e.g. `<their folder>/<project-name>/`)
-   and use *that* full path everywhere below — not the bare folder they
-   named. The only exception is when they name a path that's obviously
-   already meant to be the project root itself (a new, empty, specifically-
-   named directory, or one that already has `PROTOCOL.md` from a prior
-   session).
+1. **Default new projects to `~/ai-baton-workspace/<project-name>/`** —
+   pick or confirm `<project-name>` with the user (short, descriptive:
+   `ielts-prep`, `thesis`, not "project" or "new-project"). The workspace
+   itself is never a project — it's a container, and every project gets
+   its own named subdirectory inside it, one per thing the user is
+   tracking (`~/ai-baton-workspace/ielts-prep/`,
+   `~/ai-baton-workspace/thesis/`, etc.), the same way Step 1's `ai-baton
+   list` finds them later. Never write `PROTOCOL.md` directly into the
+   workspace root.
+1a. **Only deviate from the workspace default if the user explicitly wants
+   somewhere else** — e.g. "put it inside this repo I'm working on" is a
+   legitimate reason to use a different path. But if they name a general-
+   purpose folder they already use for other things ("put it in
+   Documents," "in my home folder"), don't scaffold directly into that
+   folder either — it already has unrelated stuff in it (other projects,
+   `node_modules/`, whatever), and dumping `PROTOCOL.md` straight into it
+   pollutes it and breaks `validate`/`skill` scripting for everything else
+   living there. Create a project-named subdirectory inside whatever they
+   named instead, same principle as the workspace default.
 1b. **Don't hardcode a Unix-style path (`~/...`, `/Users/...`) and assume
    it's right.** Home directories and separators differ by OS (Windows:
    `C:\Users\<name>\...`). If you're running `ai-baton` commands, this is
