@@ -11,7 +11,11 @@ ai-baton skill install
 package blocked plain `ai-baton` — but the command is `ai-baton` either
 way. `skill install` writes `SKILL.md` into `~/.claude/skills/ai-baton/`
 and `~/.agents/skills/ai-baton/`, the lookup paths Claude Code and Codex
-CLI scan.)
+CLI scan — the actual path resolution is cross-platform (Python's
+`Path.home()`), so this correctly lands under `C:\Users\<you>\...` on
+Windows. The shell *examples* throughout these docs are Unix/macOS syntax,
+though, and haven't been tried on Windows cmd/PowerShell — if you hit
+something that doesn't translate, that's a real gap to report.)
 
 That's it. From here you just talk to your AI tool normally.
 
@@ -27,6 +31,14 @@ yourself; they're what the AI runs, not what you run.
 Verified live in Claude Code: install the skill, ask it to start or
 continue a project, and it follows the read-order/update rules
 automatically. Not yet tested in Codex CLI or Cursor.
+
+If you name a general-purpose folder you already use for other things
+("put it in Documents"), the AI should create a new, project-named
+subdirectory inside it rather than scaffolding directly into it — a real
+early user had `ai-baton init` pointed straight at their whole `~/Documents`,
+which mixed protocol files in with every other unrelated project sitting
+there. Fixed by making this explicit in the skill's instructions
+(SKILL.md Step 2a.1a).
 
 If your AI tool doesn't have shell access to run the CLI itself, or
 `ai-baton` isn't installed yet, the skill tells it to create the

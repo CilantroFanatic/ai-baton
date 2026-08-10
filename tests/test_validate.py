@@ -79,3 +79,27 @@ def test_stale_status_is_a_warning_not_an_error(tmp_path: Path) -> None:
 
     assert result.ok
     assert any("stale" in w for w in result.warnings)
+
+
+def test_unrelated_sibling_content_is_not_scanned(tmp_path: Path) -> None:
+    # Regression test: a real user ran `ai-baton init` directly on a large,
+    # pre-existing directory (their whole ~/Documents) that also contained
+    # unrelated projects with node_modules/ full of third-party READMEs with
+    # their own (unrelated, often broken-looking) relative links. validate
+    # scanned all of it and produced thousands of false-positive "broken
+    # link" errors that had nothing to do with the ai-baton project itself.
+    _scaffold_minimum(tmp_path)
+    vendor_readme = (
+        tmp_path
+        / "some-other-project"
+        / "node_modules"
+        / "some-package"
+        / "README.md"
+    )
+    vendor_readme.parent.mkdir(parents=True)
+    vendor_readme.write_text("[nowhere](./does-not-exist-either.md)\n")
+
+    result = validate.run(tmp_path)
+
+    assert result.ok
+    assert not any("some-other-project" in e for e in result.errors)

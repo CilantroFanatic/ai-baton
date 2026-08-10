@@ -60,6 +60,27 @@ directory, if none was named):
    already get a path, ask for one now and wait for the answer. Creating a
    new project in the wrong place is exactly the "mixed together" problem
    Step 1 exists to prevent.
+1a. **What the user names is almost always a *container*, not the project
+   root itself — create a new, project-named subdirectory inside it, don't
+   scaffold directly into the folder they named.** If they say "put it in
+   Documents" / "in my home folder" / "wherever," that's a pre-existing,
+   general-purpose directory that already has unrelated stuff in it (other
+   projects, `node_modules/`, whatever) — dumping `PROTOCOL.md` and friends
+   straight into it pollutes it and breaks `validate`/`skill` scripting for
+   everything else living there too. Pick or confirm a project-specific
+   subdirectory name with the user (e.g. `<their folder>/<project-name>/`)
+   and use *that* full path everywhere below — not the bare folder they
+   named. The only exception is when they name a path that's obviously
+   already meant to be the project root itself (a new, empty, specifically-
+   named directory, or one that already has `PROTOCOL.md` from a prior
+   session).
+1b. **Don't hardcode a Unix-style path (`~/...`, `/Users/...`) and assume
+   it's right.** Home directories and separators differ by OS (Windows:
+   `C:\Users\<name>\...`). If you're running `ai-baton` commands, this is
+   handled for you (the CLI resolves the actual home directory itself). If
+   you're constructing a path yourself in prose or a manual fallback,
+   confirm the real path for the user's actual OS instead of assuming
+   macOS/Linux conventions.
 2. If the `ai-baton` CLI is installed (`ai-baton
    --help` succeeds), run:
    ```

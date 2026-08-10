@@ -107,10 +107,29 @@ def _check_memory_frontmatter(target: Path, result: Result) -> None:
             result.errors.append(f"{rel}: {err.message}")
 
 
+def _protocol_markdown_files(target: Path):
+    """Markdown files that are actually part of the protocol.
+
+    Top-level files directly in `target`, plus everything under the
+    protocol's own directories (memory/, status/, evidence/, handover/,
+    archive/). Deliberately does NOT recurse into arbitrary sibling content
+    `target` happens to contain -- an unrelated project, a node_modules/,
+    anything not defined as part of a conforming project by SPEC.md section
+    3. `validate` has no business scanning content it isn't responsible for.
+    """
+    for path in sorted(target.glob("*.md")):
+        if path.is_file():
+            yield path
+    for name in REQUIRED_DIRS:
+        base = target / name
+        if base.is_dir():
+            for path in sorted(base.rglob("*.md")):
+                if path.is_file():
+                    yield path
+
+
 def _check_internal_links(target: Path, result: Result) -> None:
-    for path in sorted(target.rglob("*.md")):
-        if not path.is_file():
-            continue
+    for path in _protocol_markdown_files(target):
         text = path.read_text(encoding="utf-8")
         rel = path.relative_to(target)
         for link in LINK_RE.findall(text):
