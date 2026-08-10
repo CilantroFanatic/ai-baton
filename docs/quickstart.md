@@ -28,12 +28,14 @@ path — that's what puts things in the right place from the start.
 ## Using it
 
 Say something like "start a new memory project for my thesis" or "pick up
-where we left off on the exam-prep project." The AI — per the skill it
-just read — checks `~/ai-baton-workspace/` for existing projects (via
-`ai-baton list`), asks which one you mean or offers to start a new one,
-then runs `ai-baton init` / `validate` / `status` on your behalf. You
-shouldn't need to type any of those commands yourself; they're what the AI
-runs, not what you run.
+where we left off on the exam-prep project." The first time ever, the AI
+asks where your workspace should live (default: `~/ai-baton-workspace/`,
+or somewhere else) and remembers the answer via `ai-baton workspace set`
+— not re-asked after that. From then on it just checks that workspace for
+existing projects (via `ai-baton list`), asks which one you mean or offers
+to start a new one, then runs `ai-baton init` / `validate` / `status` on
+your behalf. You shouldn't need to type any of those commands yourself;
+they're what the AI runs, not what you run.
 
 Every project gets its own named subdirectory under the workspace —
 `~/ai-baton-workspace/thesis/`, `~/ai-baton-workspace/ielts-prep/`, and so
@@ -95,6 +97,16 @@ defaults, e.g. to scope it to one project:
 ```bash
 ai-baton skill install my-project/.agents/skills
 ```
+
+Change the remembered workspace location any time:
+
+```bash
+ai-baton workspace set ~/somewhere-else
+```
+
+Any command that hits a bad path (typo, no permission, read-only
+filesystem) now prints a plain "can't access X, check the path and try
+again" instead of a Python traceback.
 
 To work on ai-baton's own code instead of just using it, install from a
 local checkout:

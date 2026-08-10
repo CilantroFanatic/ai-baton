@@ -1,8 +1,44 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
-DEFAULT_WORKSPACE = Path.home() / "ai-baton-workspace"
+FALLBACK_WORKSPACE = Path.home() / "ai-baton-workspace"
+GLOBAL_CONFIG_FILE = Path.home() / ".ai-baton" / "config.json"
+
+
+def resolve_default_workspace() -> Path:
+    """Where `ai-baton list`/the skill look when no path is given.
+
+    Checks ~/.ai-baton/config.json's "workspace" key first -- set once,
+    the first time a user picks (or confirms) where their workspace should
+    live, so later sessions don't have to ask again. Falls back to
+    ~/ai-baton-workspace if there's no config, or it's malformed/unusable.
+    """
+    if GLOBAL_CONFIG_FILE.is_file():
+        try:
+            data = json.loads(GLOBAL_CONFIG_FILE.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            return FALLBACK_WORKSPACE
+        configured = data.get("workspace") if isinstance(data, dict) else None
+        if isinstance(configured, str) and configured.strip():
+            return Path(configured).expanduser()
+    return FALLBACK_WORKSPACE
+
+
+def set_default_workspace(path: Path) -> None:
+    """Persist the user's chosen workspace root for future sessions."""
+    GLOBAL_CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    data = {}
+    if GLOBAL_CONFIG_FILE.is_file():
+        try:
+            existing = json.loads(GLOBAL_CONFIG_FILE.read_text(encoding="utf-8"))
+            if isinstance(existing, dict):
+                data = existing
+        except json.JSONDecodeError:
+            pass
+    data["workspace"] = str(path)
+    GLOBAL_CONFIG_FILE.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
 def list_projects(workspace: Path | None = None) -> list[str]:
@@ -11,7 +47,7 @@ def list_projects(workspace: Path | None = None) -> list[str]:
     Meant for a fresh session on a possibly-new tool to discover what
     already exists without the user having to repeat a path from memory.
     """
-    base = workspace if workspace is not None else DEFAULT_WORKSPACE
+    base = workspace if workspace is not None else resolve_default_workspace()
     if not base.is_dir():
         return [f"no workspace at {base} (nothing created there yet)"]
 

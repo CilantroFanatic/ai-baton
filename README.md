@@ -30,16 +30,19 @@ extraction. See [`docs/comparison.md`](docs/comparison.md).
 Pre-alpha. `pip install ai-baton-tool` (PyPI distribution name differs
 from the `ai-baton` command — an existing unrelated package blocked that
 name). Working: the spec (`SPEC.md`), the `init` / `validate` / `status` /
-`list` / `skill install` CLI, a default workspace convention
-(`~/ai-baton-workspace/<project-name>/`, discoverable across tools/sessions
-via `ai-baton list`), a full worked example (`examples/demo-project/`),
-and an [Agent Skills](https://agentskills.io/) skill — `ai-baton skill
-install` puts it where Claude Code and Codex CLI look for it, triggered
-live in Claude Code but not yet in Codex or Cursor. `validate` also flags
-well-known credential formats (AWS/GitHub/Slack keys, private key blocks)
-as a heuristic safety net, not a full secrets scanner, and warns (per-
-project configurable via `.ai-baton.json`) when `memory/` gets large
-enough to be a real token cost every session. 31 tests pass locally. Not
+`list` / `workspace set` / `skill install` CLI, a default workspace
+convention (`~/ai-baton-workspace/<project-name>/`, its root chosen once
+and remembered via `~/.ai-baton/config.json`, discoverable across
+tools/sessions via `ai-baton list`), a full worked example
+(`examples/demo-project/`), and an [Agent Skills](https://agentskills.io/)
+skill — `ai-baton skill install` puts it where Claude Code and Codex CLI
+look for it, triggered live in Claude Code but not yet in Codex or Cursor.
+`validate` also flags well-known credential formats (AWS/GitHub/Slack
+keys, private key blocks) as a heuristic safety net, not a full secrets
+scanner, and warns (per-project configurable via `.ai-baton.json`) when
+`memory/` gets large enough to be a real token cost every session. Bad
+paths now fail with a plain error message instead of a Python traceback.
+40 tests pass locally. Not
 built: semantic search (by design) and any automated measurement of
 handoff effectiveness (methodology sketched in
 `docs/metrics.md`, nothing wired up).

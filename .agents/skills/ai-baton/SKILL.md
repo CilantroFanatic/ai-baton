@@ -70,10 +70,29 @@ don't guess and don't ask blind — **check the default workspace first**:
 ai-baton list
 ```
 
-(scans `~/ai-baton-workspace/` — cross-platform, resolved by the CLI, not
-something you need to construct by hand. No CLI available? List that
-directory yourself the same way: subdirectories containing `PROTOCOL.md`
-are existing projects.)
+(No CLI available? List that directory yourself the same way:
+subdirectories containing `PROTOCOL.md` are existing projects.)
+
+**Before that command means anything, the workspace root itself has to
+have actually been chosen — not just assumed.** `ai-baton list` resolves
+the root from `~/.ai-baton/config.json` if one was ever set, otherwise
+falls back to `~/ai-baton-workspace/`. That fallback existing (or not) is
+how you tell whether this has happened before:
+
+- **Neither the config nor a `~/ai-baton-workspace/` directory exists
+  yet** — this is genuinely the first time. Don't silently default to
+  `~/ai-baton-workspace/` and create things there; ask first, using a
+  guided question if your environment supports one (recommended pick
+  first, per the ordering rule above): "Use the default location
+  (`~/ai-baton-workspace`), or somewhere else?" If they pick somewhere
+  else, run `ai-baton workspace set <path>` to remember it — this is what
+  makes it a one-time question instead of asking again for every future
+  project. If the path they give turns out to be unusable (the CLI's
+  error will say so plainly, not a raw traceback), tell them it's not
+  accessible and ask them to give a different one — don't guess or fall
+  back silently.
+- **Either one already exists**: the root is already established. Don't
+  ask again — proceed straight to `ai-baton list` below.
 
 - **The workspace has one or more projects**: show them to the user (name
   + whatever current-goal line `list` printed) and ask which one, or

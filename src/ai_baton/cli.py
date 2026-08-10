@@ -61,8 +61,22 @@ def build_parser() -> argparse.ArgumentParser:
         "workspace",
         nargs="?",
         default=None,
-        help="Workspace directory to scan (default: ~/ai-baton-workspace).",
+        help="Workspace directory to scan (default: resolved via `workspace set`, "
+        "falling back to ~/ai-baton-workspace).",
     )
+
+    workspace_parser = subparsers.add_parser(
+        "workspace", help="Manage the default workspace location."
+    )
+    workspace_subparsers = workspace_parser.add_subparsers(
+        dest="workspace_command", required=True
+    )
+    workspace_set_parser = workspace_subparsers.add_parser(
+        "set",
+        help="Remember a workspace root for future `list`/skill use, so it's only "
+        "chosen once, not re-asked every session.",
+    )
+    workspace_set_parser.add_argument("path", help="The workspace directory to remember.")
 
     return parser
 
@@ -71,6 +85,20 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
+    try:
+        return _dispatch(args)
+    except OSError as exc:
+        # Covers bad/unwritable paths (typo'd root, read-only filesystem,
+        # permission denied, etc.) for any command that touches disk. A
+        # human-readable "not found, try a different path" beats a raw
+        # Python traceback -- the caller (human or AI) should be able to
+        # just ask again with a corrected path.
+        print(f"ERROR: can't access '{exc.filename or '?'}' — {exc.strerror or exc}. "
+              "Check the path and try again.", file=sys.stderr)
+        return 1
+
+
+def _dispatch(args: argparse.Namespace) -> int:
     if args.command == "skill" and args.skill_command == "install":
         targets = [Path(t).resolve() for t in args.targets] or None
         for message in skill_cmd.install(targets):
@@ -81,6 +109,12 @@ def main(argv: list[str] | None = None) -> int:
         workspace = Path(args.workspace).resolve() if args.workspace else None
         for line in workspace_cmd.list_projects(workspace):
             print(line)
+        return 0
+
+    if args.command == "workspace" and args.workspace_command == "set":
+        chosen = Path(args.path).expanduser().resolve()
+        workspace_cmd.set_default_workspace(chosen)
+        print(f"remembered workspace: {chosen}")
         return 0
 
     target = Path(args.path).resolve()
@@ -110,8 +144,9 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         return 0
 
-    parser.error(f"unknown command: {args.command}")
-    return 2  # pragma: no cover — argparse exits before this via parser.error
+    raise AssertionError(
+        f"unreachable: argparse should have rejected unknown command {args.command!r}"
+    )  # pragma: no cover
 
 
 if __name__ == "__main__":

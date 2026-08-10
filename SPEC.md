@@ -190,12 +190,26 @@ version they conform to (e.g., in `PROTOCOL.md`'s header).
 
 ## 8. Optional configuration
 
-A project may include a `.ai-baton.json` file at its root to override tool
-defaults.
+Two separate, deliberately distinct config files — different scope, don't
+confuse them:
+
+### 8.1 Per-project: `.ai-baton.json`
+
+At a project's root, overrides tool defaults for that project only.
 
 | Key | Default | Meaning |
 |---|---|---|
 | `memory_size_warning_chars` | `50000` | Character-count threshold (§6.7) above which `validate` warns that `memory/` is getting large. Raising it is a legitimate choice for a project that genuinely needs a bigger active index, not a workaround. |
 
-No file present: defaults apply. File present but malformed: `validate`
-warns and falls back to defaults rather than failing outright.
+### 8.2 Per-user: `~/.ai-baton/config.json`
+
+At the user's home directory, remembers choices that apply across every
+project on that machine.
+
+| Key | Default | Meaning |
+|---|---|---|
+| `workspace` | `~/ai-baton-workspace` | The default container directory `ai-baton list` scans and new projects are created under when no explicit path is given (§3, workspace convention). Set once via `ai-baton workspace set <path>`, the first time a user is asked where their workspace should live — not re-asked for every subsequent project. |
+
+Both files: missing means defaults apply. Present but malformed means the
+tool warns (or, for the CLI's path-resolution use of `workspace`, falls
+back silently to the default) rather than failing outright.

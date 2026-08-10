@@ -1,6 +1,72 @@
 from pathlib import Path
 
+import pytest
+
 from ai_baton.commands import init, workspace
+
+
+@pytest.fixture
+def isolated_global_config(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    # Never touch the developer's real ~/.ai-baton/config.json during tests.
+    config_file = tmp_path / "home" / ".ai-baton" / "config.json"
+    fallback = tmp_path / "home" / "ai-baton-workspace"
+    monkeypatch.setattr(workspace, "GLOBAL_CONFIG_FILE", config_file)
+    monkeypatch.setattr(workspace, "FALLBACK_WORKSPACE", fallback)
+    return config_file
+
+
+def test_resolve_default_workspace_falls_back_when_no_config(
+    isolated_global_config: Path,
+) -> None:
+    assert workspace.resolve_default_workspace() == workspace.FALLBACK_WORKSPACE
+
+
+def test_set_then_resolve_default_workspace_persists_the_choice(
+    isolated_global_config: Path, tmp_path: Path
+) -> None:
+    chosen = tmp_path / "somewhere-else" / "my-workspace"
+
+    workspace.set_default_workspace(chosen)
+
+    assert workspace.resolve_default_workspace() == chosen
+    assert isolated_global_config.is_file()
+
+
+def test_malformed_global_config_falls_back_silently(
+    isolated_global_config: Path,
+) -> None:
+    isolated_global_config.parent.mkdir(parents=True)
+    isolated_global_config.write_text("{not valid json")
+
+    assert workspace.resolve_default_workspace() == workspace.FALLBACK_WORKSPACE
+
+
+def test_set_default_workspace_preserves_other_config_keys(
+    isolated_global_config: Path, tmp_path: Path
+) -> None:
+    isolated_global_config.parent.mkdir(parents=True)
+    isolated_global_config.write_text('{"some_other_setting": true}')
+
+    workspace.set_default_workspace(tmp_path / "chosen")
+
+    import json
+
+    data = json.loads(isolated_global_config.read_text())
+    assert data["some_other_setting"] is True
+    assert data["workspace"] == str(tmp_path / "chosen")
+
+
+def test_list_projects_with_no_argument_uses_resolved_default(
+    isolated_global_config: Path, tmp_path: Path
+) -> None:
+    chosen = tmp_path / "custom-root"
+    workspace.set_default_workspace(chosen)
+    init.run(chosen / "thesis")
+
+    lines = workspace.list_projects()  # no explicit workspace argument
+
+    assert any(str(chosen) in line for line in lines)
+    assert any("thesis" in line for line in lines)
 
 
 def test_list_projects_reports_missing_workspace(tmp_path: Path) -> None:
