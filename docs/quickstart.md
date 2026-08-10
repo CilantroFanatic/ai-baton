@@ -74,11 +74,20 @@ ai-baton validate ~/ai-baton-workspace/my-project # check frontmatter, links, st
 `status/CURRENT_STATUS.md` exist and aren't empty, every file under
 `memory/` has frontmatter matching `schemas/memory-frontmatter.schema.json`,
 internal links resolve, `CURRENT_STATUS.md` isn't more than 30 days stale
-(a warning, not a hard failure), and none of the protocol's own files
-match a well-known credential format (AWS/GitHub/Slack keys, PEM private
-key blocks, JWT-looking tokens) per SPEC.md section 6.6 — a heuristic
-safety net for obvious cases, not a substitute for not pasting secrets in
-the first place.
+(a warning, not a hard failure), none of the protocol's own files match a
+well-known credential format (AWS/GitHub/Slack keys, PEM private key
+blocks, JWT-looking tokens) per SPEC.md section 6.6 — a heuristic safety
+net for obvious cases, not a substitute for not pasting secrets in the
+first place — and `memory/` isn't over 50,000 characters (SPEC.md section
+6.7; also a warning, not a failure). Every session that reads
+`memory/INDEX.md` pays for its size in tokens, so past that threshold
+`validate` nudges you to archive stale-but-still-true entries. Override
+the threshold per project with a `.ai-baton.json` file at the project
+root:
+
+```json
+{ "memory_size_warning_chars": 200000 }
+```
 
 `skill install` also accepts explicit paths instead of the two global
 defaults, e.g. to scope it to one project:

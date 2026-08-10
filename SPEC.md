@@ -74,8 +74,11 @@ PROTOCOL.md   the read order + update rules below, copied into the project
 
 ### 3.5 `archive/`
 
-- Superseded plans, old conventions, retired approaches. Moved here, never
-  deleted, so history remains inspectable.
+- Superseded plans, old conventions, retired approaches — and `memory/`
+  entries that are still true but no longer worth keeping in the active
+  read path (see §6.7; this is a different reason to archive something
+  than "it turned out to be wrong"). Moved here, never deleted, so history
+  remains inspectable.
 
 ## 4. Mandatory read order
 
@@ -143,9 +146,44 @@ the docs" is not evidence of capability; a specific tested outcome is.
 Passwords, API keys, tokens, and other credentials are never written into
 any file under this protocol.
 
+### 6.7 Keeping `memory/` bounded
+
+`memory/INDEX.md` and whatever it links to gets read every session (§4) —
+unlike `evidence/`, which is only consulted on demand. Left unmanaged,
+`memory/` grows without bound over a long project, and every session pays
+for that in tokens.
+
+- Periodically move `memory/` entries that are still true but rarely
+  relevant to `archive/` (§3.5). This is not the same operation as
+  superseding something wrong — it's freeing the active read path from
+  facts that don't need to be loaded every time. Nothing is lost; the file
+  just isn't part of what gets read by default anymore.
+- This is a judgment call, not a mechanical policy. Do not evict by
+  recency of use alone — an automatic, LRU-style policy would silently
+  drop rare-but-important facts just because they haven't come up lately.
+  An AI proposing what to archive presents the candidates as one batch
+  with brief reasoning each, and gets one combined confirmation — not a
+  separate confirmation per entry. Reviewing fifty items one at a time
+  defeats the point of batching in the first place.
+- `validate` warns (never errors) once `memory/` crosses a size threshold,
+  as a nudge to do this — not a requirement to act immediately, and not a
+  hard limit (see §8).
+
 ## 7. Versioning
 
 This file's version applies to the whole protocol. Breaking changes to
 directory roles or required frontmatter fields bump the minor version pre-1.0
 and the major version post-1.0. Projects should record which protocol
 version they conform to (e.g., in `PROTOCOL.md`'s header).
+
+## 8. Optional configuration
+
+A project may include a `.ai-baton.json` file at its root to override tool
+defaults.
+
+| Key | Default | Meaning |
+|---|---|---|
+| `memory_size_warning_chars` | `50000` | Character-count threshold (§6.7) above which `validate` warns that `memory/` is getting large. Raising it is a legitimate choice for a project that genuinely needs a bigger active index, not a workaround. |
+
+No file present: defaults apply. File present but malformed: `validate`
+warns and falls back to defaults rather than failing outright.

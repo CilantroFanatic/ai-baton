@@ -176,5 +176,14 @@ that might be stale or fabricated.
   `archive/`.
 - **Never write credentials** (passwords, API keys, tokens) into any file
   here.
+- **If `validate` warns that `memory/` is getting large** (SPEC.md §6.7):
+  review it, but don't ask the user to approve archiving one entry at a
+  time — that doesn't scale past a handful of items. Propose a batch: list
+  the candidates (still true, just rarely relevant) with one line of
+  reasoning each, get one combined go-ahead, then move them to `archive/`.
+  Don't evict by recency alone — a fact being rarely referenced doesn't
+  mean it's unimportant. If the project genuinely needs a bigger active
+  index, raising the threshold in `.ai-baton.json` is a legitimate answer
+  too, not just archiving.
 - Before ending a session, if the CLI is available, run
   `ai-baton validate <path>` and fix anything it flags.

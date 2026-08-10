@@ -127,6 +127,43 @@ def test_ordinary_content_does_not_false_positive_as_a_secret(tmp_path: Path) ->
     assert result.ok
 
 
+def _big_valid_memory_file(chars: int) -> str:
+    frontmatter = (
+        "---\nid: big\ndate: 2026-01-01\nconfidence: verified\nsource: x\n---\n\n"
+    )
+    return frontmatter + "x" * chars
+
+
+def test_large_memory_dir_warns_with_default_threshold(tmp_path: Path) -> None:
+    _scaffold_minimum(tmp_path)
+    (tmp_path / "memory" / "big.md").write_text(_big_valid_memory_file(60_000))
+
+    result = validate.run(tmp_path)
+
+    assert result.ok  # a warning, not an error
+    assert any("memory/ is" in w and "warning threshold" in w for w in result.warnings)
+
+
+def test_memory_size_threshold_is_configurable(tmp_path: Path) -> None:
+    _scaffold_minimum(tmp_path)
+    (tmp_path / "memory" / "big.md").write_text(_big_valid_memory_file(60_000))
+    (tmp_path / ".ai-baton.json").write_text('{"memory_size_warning_chars": 1000000}')
+
+    result = validate.run(tmp_path)
+
+    assert not any("warning threshold" in w for w in result.warnings)
+
+
+def test_malformed_config_falls_back_to_default_with_a_warning(tmp_path: Path) -> None:
+    _scaffold_minimum(tmp_path)
+    (tmp_path / ".ai-baton.json").write_text("{not valid json")
+
+    result = validate.run(tmp_path)
+
+    assert result.ok
+    assert any("invalid JSON" in w for w in result.warnings)
+
+
 def test_unrelated_sibling_content_is_not_scanned(tmp_path: Path) -> None:
     # Regression test: a real user ran `ai-baton init` directly on a large,
     # pre-existing directory (their whole ~/Documents) that also contained

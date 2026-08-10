@@ -12,8 +12,15 @@ from jsonschema import Draft7Validator
 
 REQUIRED_DIRS = ["memory", "status", "evidence", "handover", "archive"]
 SCHEMA_PATH = Path(__file__).resolve().parent.parent / "schemas" / "memory-frontmatter.schema.json"
+CONFIG_FILE = ".ai-baton.json"
 
 STALE_STATUS_DAYS = 30
+
+# Rough chars-per-token estimate (no tokenizer dependency -- this is a
+# heads-up, not a precise budget). ~50,000 chars is generous headroom for
+# an actively curated memory/ (SPEC.md 3.1: one fact per file, kept
+# short) before it's worth archiving stale entries out of the active index.
+DEFAULT_MEMORY_SIZE_WARNING_CHARS = 50_000
 
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?\n)---\s*\n?", re.DOTALL)
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -50,13 +57,35 @@ class Result:
 
 def run(target: Path) -> Result:
     result = Result()
+    config = _load_config(target, result)
     _check_required_dirs(target, result)
     _check_protocol_file(target, result)
     _check_current_status(target, result)
     _check_memory_frontmatter(target, result)
     _check_internal_links(target, result)
     _check_no_secrets(target, result)
+    _check_memory_size(target, result, config)
     return result
+
+
+def _load_config(target: Path, result: Result) -> dict:
+    """Optional per-project overrides, e.g. {"memory_size_warning_chars": N}.
+
+    Missing file is normal (defaults apply). A present-but-malformed file is
+    reported as a warning rather than silently ignored or crashing validate.
+    """
+    config_path = target / CONFIG_FILE
+    if not config_path.is_file():
+        return {}
+    try:
+        data = json.loads(config_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        result.warnings.append(f"{CONFIG_FILE}: invalid JSON, ignoring it ({exc})")
+        return {}
+    if not isinstance(data, dict):
+        result.warnings.append(f"{CONFIG_FILE}: expected a JSON object, ignoring it")
+        return {}
+    return data
 
 
 def _check_required_dirs(target: Path, result: Result) -> None:
@@ -161,6 +190,33 @@ def _check_internal_links(target: Path, result: Result) -> None:
             resolved = (path.parent / link_path).resolve()
             if not resolved.exists():
                 result.errors.append(f"{rel}: broken link to '{link}'")
+
+
+def _check_memory_size(target: Path, result: Result, config: dict) -> None:
+    memory_dir = target / "memory"
+    if not memory_dir.is_dir():
+        return
+
+    threshold = config.get("memory_size_warning_chars", DEFAULT_MEMORY_SIZE_WARNING_CHARS)
+    if not isinstance(threshold, (int, float)) or threshold <= 0:
+        result.warnings.append(
+            f"{CONFIG_FILE}: memory_size_warning_chars must be a positive number, "
+            f"ignoring it and using the default ({DEFAULT_MEMORY_SIZE_WARNING_CHARS})"
+        )
+        threshold = DEFAULT_MEMORY_SIZE_WARNING_CHARS
+
+    total_chars = sum(
+        path.stat().st_size for path in memory_dir.rglob("*.md") if path.is_file()
+    )
+    if total_chars > threshold:
+        result.warnings.append(
+            f"memory/ is {total_chars:,} characters (over the {int(threshold):,} "
+            "warning threshold) — every session that reads memory/INDEX.md and "
+            "what it links to pays for this in tokens. Either archive entries "
+            "that are still true but rarely needed (SPEC.md section 3.5), or "
+            f"raise the threshold by adding {{\"memory_size_warning_chars\": N}} "
+            f"to {CONFIG_FILE} in the project root."
+        )
 
 
 def _check_no_secrets(target: Path, result: Result) -> None:
