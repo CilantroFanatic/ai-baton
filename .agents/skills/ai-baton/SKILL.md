@@ -160,24 +160,32 @@ how you tell whether this has happened before:
    <path>/handover/
    <path>/archive/
    ```
-4. **Don't treat this as a blank slate if it isn't one.** If the
-   conversation already has substantial history relevant to this project —
-   the user didn't start talking about this five seconds ago — review it
-   instead of just asking "what's your current goal" as if nothing
-   happened. Sort what you find into:
-   - Things that look like durable facts/decisions → candidates for
-     `memory/`, but `confidence: unverified` unless the user actually
-     confirms them now — you're inferring from a conversation, not from a
-     primary source.
-   - What's actually happening right now → `status/CURRENT_STATUS.md`.
-   - Raw detail worth preserving (a specific error, a specific exchange) →
-     `evidence/`.
+4. **Don't silently decide for yourself whether this conversation has
+   relevant history worth backfilling — ask.** Judging "is there
+   substantial prior context here" is itself a judgment call that can be
+   wrong, in both directions: skipping real context because you decided it
+   didn't look relevant, or dragging in unrelated earlier discussion into
+   a project that's actually about something else. Don't make that call
+   silently either way — surface it as an explicit question alongside (or
+   right after) asking what the project is about, e.g.: "这个跟咱们之前聊的
+   内容有关吗?要不要我回顾一下这段对话,把相关的东西整理进去?" ("Is this
+   related to what we've already been discussing? Want me to review this
+   conversation and pull in anything relevant?").
+   - If yes: review it, then sort what you find into:
+     - Things that look like durable facts/decisions → candidates for
+       `memory/`, but `confidence: unverified` unless the user actually
+       confirms them now — you're inferring from a conversation, not from
+       a primary source.
+     - What's actually happening right now → `status/CURRENT_STATUS.md`.
+     - Raw detail worth preserving (a specific error, a specific exchange)
+       → `evidence/`.
 
-   Show the user this breakdown and get confirmation before writing any of
-   it — don't silently decide on their behalf what from the conversation
-   mattered enough to keep.
-5. If there's truly nothing to backfill (a genuinely fresh start), ask the
-   user what the actual current goal is, and write it into
+     Show the user this breakdown and get confirmation before writing any
+     of it — don't silently decide on their behalf what from the
+     conversation mattered enough to keep.
+   - If no (a genuinely unrelated fresh topic, e.g. a new PPT on something
+     else entirely): treat it as a blank start, go to step 5.
+5. Ask the user what the actual current goal is, and write it into
    `status/CURRENT_STATUS.md`. Don't leave it as a template placeholder.
 
 ## Step 2b — Existing project
