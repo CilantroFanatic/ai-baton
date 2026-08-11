@@ -48,7 +48,13 @@ Step 1 and Step 2a.1).
 
 Verified live in Claude Code: install the skill, ask it to start or
 continue a project, and it follows the read-order/update rules
-automatically. Not yet tested in Codex CLI or Cursor.
+automatically, and also confirmed triggering in Codex CLI (a real user
+test: it discovered the skill, checked the workspace, and created a new
+project correctly) — though not every rule was confirmed followed there
+(the `[baton: held]` canary tag and guided-question UI didn't show up;
+Codex CLI's own capabilities for that are unconfirmed, so this may be
+Codex correctly falling back to plain text rather than non-compliance).
+Not yet tested in Cursor.
 
 If your AI tool doesn't have shell access to run the CLI itself, or
 `ai-baton` isn't installed yet, the skill tells it to create the

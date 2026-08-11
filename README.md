@@ -36,7 +36,10 @@ and remembered via `~/.ai-baton/config.json`, discoverable across
 tools/sessions via `ai-baton list`), a full worked example
 (`examples/demo-project/`), and an [Agent Skills](https://agentskills.io/)
 skill — `ai-baton skill install` puts it where Claude Code and Codex CLI
-look for it, triggered live in Claude Code but not yet in Codex or Cursor.
+look for it, confirmed triggering live in both (a real user test in Codex
+CLI discovered and ran the skill correctly, though full compliance with
+every rule — e.g. the canary tag, guided-question UI — wasn't confirmed
+there). Not yet tested in Cursor.
 `validate` also flags well-known credential formats (AWS/GitHub/Slack
 keys, private key blocks) as a heuristic safety net, not a full secrets
 scanner, and warns (per-project configurable via `.ai-baton.json`) when
