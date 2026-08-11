@@ -4,6 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
+from . import __version__
 from .commands import init as init_cmd
 from .commands import skill as skill_cmd
 from .commands import status as status_cmd
@@ -15,6 +16,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="ai-baton",
         description="Scaffold, validate, and read ai-baton projects.",
+    )
+    parser.add_argument(
+        "--version", action="version", version=f"ai-baton {__version__}"
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 

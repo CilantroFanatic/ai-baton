@@ -2,7 +2,23 @@ from pathlib import Path
 
 import pytest
 
-from ai_baton import cli
+from ai_baton import __version__, cli
+
+
+def test_version_flag_reports_the_installed_version(capsys) -> None:
+    with pytest.raises(SystemExit) as exc_info:
+        cli.main(["--version"])
+
+    assert exc_info.value.code == 0
+    captured = capsys.readouterr()
+    assert __version__ in captured.out
+
+
+def test_version_is_not_the_stale_hardcoded_0_0_1() -> None:
+    # Regression: __version__ used to be hand-written in __init__.py and
+    # never got bumped alongside pyproject.toml across a dozen releases.
+    # Now it's read from installed package metadata, so this can't drift.
+    assert __version__ != "0.0.1"
 
 
 def test_unwritable_path_gives_a_clean_error_not_a_traceback(capsys, tmp_path: Path) -> None:
