@@ -26,7 +26,8 @@ the magic words:
 - **The user (or you) discovers this mid-conversation** — they weren't
   setting this up from message one; there's already real history in this
   conversation that matters. Don't treat that history as if it doesn't
-  exist — see Step 2a.4.
+  exist — see Step 2a Question 2 (or Step 2b's version of the same check
+  for an existing project).
 
 In both cases, get the user's go-ahead before creating anything. This is
 an offer, not something to do silently in the background.
@@ -36,7 +37,8 @@ offers a structured/interactive question mechanism (multiple-choice with
 a free-text fallback, buttons, whatever your host supports) — use it
 instead of a plain open paragraph, every time you ask the user something
 in this skill: Step 1's new-vs-existing question, the project name/goal
-in Step 2a, the backfill confirmation in Step 2a.4. This holds even when
+in Step 2a, the backfill confirmation in Step 2a's Question 2 (and Step
+2b's equivalent). This holds even when
 the real answer is open-ended (e.g. "what do you want to track") — offer
 a few illustrative categories (thesis, exam prep, job search, whatever
 fits the conversation) as quick picks, with "something else" as an
@@ -229,6 +231,31 @@ yourself having skipped it, treat that as a sign to re-read now rather
 than pushing through.
 
 ## Step 3 — while working (applies to both new and existing)
+
+**When to actually write, not just where.** Structure without a trigger
+is useless — here's what should make you write something right then,
+not queue it up as "remember this for later":
+
+- **A decision gets made, or a fact gets confirmed** → write it to
+  `memory/` immediately. Don't wait to be asked, and don't wait for the
+  session to end — by the time anyone thinks to say "remember this,"
+  it should already be written.
+- **Something about the current situation changes** — a blocker appears
+  or clears, the next step changes, the goal shifts → update
+  `status/CURRENT_STATUS.md` right then, not just at the end.
+- **A specific exchange is worth being able to reconstruct later** (a
+  real error and its real fix, a substantive answer to a substantive
+  question) → append it to `evidence/` at that point, not reconstructed
+  from memory afterward.
+- **Before ending a session, or when the user signals they're wrapping
+  up** → do a final `status/CURRENT_STATUS.md` pass and run `ai-baton
+  validate <path>` if the CLI is available (see the bullet on this
+  further down) — this is a backstop, not the only time writing happens.
+
+Waiting until the end of a long session to write everything at once
+defeats the point — detail gets lost, and it's exactly the kind of
+"significant work happened but nothing was recorded" gap this protocol
+exists to prevent.
 
 - **Dates are always `YYYY-MM-DD`.** Never "today"/"tomorrow" — they expire
   the moment this file is read later.
