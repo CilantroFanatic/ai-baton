@@ -73,35 +73,13 @@ ai-baton list
 (No CLI available? List that directory yourself the same way:
 subdirectories containing `PROTOCOL.md` are existing projects.)
 
-**Before that command means anything, the workspace root itself has to
-have actually been chosen — not just assumed.** `ai-baton list` resolves
-the root from `~/.ai-baton/config.json` if one was ever set, otherwise
-falls back to `~/ai-baton-workspace/`. That fallback existing (or not) is
-how you tell whether this has happened before:
-
-- **Neither the config nor a `~/ai-baton-workspace/` directory exists
-  yet** — this is genuinely the first time. Don't silently default to
-  `~/ai-baton-workspace/` and create things there; ask first, using a
-  guided question if your environment supports one (recommended pick
-  first, per the ordering rule above): "Use the default location
-  (`~/ai-baton-workspace`), or somewhere else?" If they pick somewhere
-  else, run `ai-baton workspace set <path>` to remember it — this is what
-  makes it a one-time question instead of asking again for every future
-  project. If the path they give turns out to be unusable (the CLI's
-  error will say so plainly, not a raw traceback), tell them it's not
-  accessible and ask them to give a different one — don't guess or fall
-  back silently.
-- **Either one already exists**: the root is already established. Don't
-  ask again — proceed straight to `ai-baton list` below.
-
 - **The workspace has one or more projects**: show them to the user (name
   + whatever current-goal line `list` printed) and ask which one, or
   whether this is a new one. This is what lets someone switch to a
   different AI tool later and actually find their existing projects
   instead of having to remember and retype a path.
 - **The workspace is empty or doesn't exist yet, and a specific directory
-  wasn't named**: this is a new project. Go to Step 2a — it defaults new
-  projects into the workspace automatically.
+  wasn't named**: this is a new project. Go to Step 2a.
 - **A `PROTOCOL.md` was found** (in a named directory, or picked from the
   workspace list): existing project. Go to Step 2b. Don't ask — the file's
   presence is the answer.
@@ -117,76 +95,105 @@ how you tell whether this has happened before:
   for a thesis), this is the moment that keeps them from getting mixed
   together — don't assume which one "the project" means.
 
-## Step 2a — New project
+## Step 2a — New project: three fixed questions, in this order
 
-1. **Default new projects to `~/ai-baton-workspace/<project-name>/`** —
-   pick or confirm `<project-name>` with the user (short, descriptive:
-   `ielts-prep`, `thesis`, not "project" or "new-project"). The workspace
-   itself is never a project — it's a container, and every project gets
-   its own named subdirectory inside it, one per thing the user is
-   tracking (`~/ai-baton-workspace/ielts-prep/`,
-   `~/ai-baton-workspace/thesis/`, etc.), the same way Step 1's `ai-baton
-   list` finds them later. Never write `PROTOCOL.md` directly into the
-   workspace root.
-1a. **Only deviate from the workspace default if the user explicitly wants
-   somewhere else** — e.g. "put it inside this repo I'm working on" is a
-   legitimate reason to use a different path. But if they name a general-
-   purpose folder they already use for other things ("put it in
-   Documents," "in my home folder"), don't scaffold directly into that
-   folder either — it already has unrelated stuff in it (other projects,
-   `node_modules/`, whatever), and dumping `PROTOCOL.md` straight into it
-   pollutes it and breaks `validate`/`skill` scripting for everything else
-   living there. Create a project-named subdirectory inside whatever they
-   named instead, same principle as the workspace default.
-1b. **Don't hardcode a Unix-style path (`~/...`, `/Users/...`) and assume
-   it's right.** Home directories and separators differ by OS (Windows:
-   `C:\Users\<name>\...`). If you're running `ai-baton` commands, this is
-   handled for you (the CLI resolves the actual home directory itself). If
-   you're constructing a path yourself in prose or a manual fallback,
-   confirm the real path for the user's actual OS instead of assuming
-   macOS/Linux conventions.
-2. If the `ai-baton` CLI is installed (`ai-baton
-   --help` succeeds), run:
-   ```
-   ai-baton init <path>
-   ```
-3. If the CLI isn't installed, create the structure by hand — it's just
-   files:
-   ```
-   <path>/PROTOCOL.md          # copy the "Rules" section below into it
-   <path>/memory/INDEX.md      # frontmatter: id, date, confidence, source (see Step 3)
-   <path>/status/CURRENT_STATUS.md
-   <path>/evidence/
-   <path>/handover/
-   <path>/archive/
-   ```
-4. **Don't silently decide for yourself whether this conversation has
-   relevant history worth backfilling — ask.** Judging "is there
-   substantial prior context here" is itself a judgment call that can be
-   wrong, in both directions: skipping real context because you decided it
-   didn't look relevant, or dragging in unrelated earlier discussion into
-   a project that's actually about something else. Don't make that call
-   silently either way — surface it as an explicit question alongside (or
-   right after) asking what the project is about, e.g.: "这个跟咱们之前聊的
-   内容有关吗?要不要我回顾一下这段对话,把相关的东西整理进去?" ("Is this
-   related to what we've already been discussing? Want me to review this
-   conversation and pull in anything relevant?").
-   - If yes: review it, then sort what you find into:
-     - Things that look like durable facts/decisions → candidates for
-       `memory/`, but `confidence: unverified` unless the user actually
-       confirms them now — you're inferring from a conversation, not from
-       a primary source.
-     - What's actually happening right now → `status/CURRENT_STATUS.md`.
-     - Raw detail worth preserving (a specific error, a specific exchange)
-       → `evidence/`.
+A new project always goes through these three questions, in this order.
+Each one names its own condition for skipping — don't skip for any other
+reason (topic "seems obvious," feels redundant, etc.), and don't reorder
+them. This exists because live testing kept finding sessions that quietly
+dropped one of these — asking blind, defaulting a path without asking,
+skipping the backfill question — usually because the AI judged for itself
+that a step wasn't needed instead of just asking.
 
-     Show the user this breakdown and get confirmation before writing any
-     of it — don't silently decide on their behalf what from the
-     conversation mattered enough to keep.
-   - If no (a genuinely unrelated fresh topic, e.g. a new PPT on something
-     else entirely): treat it as a blank start, go to step 5.
-5. Ask the user what the actual current goal is, and write it into
-   `status/CURRENT_STATUS.md`. Don't leave it as a template placeholder.
+### Question 1 — where should this live?
+
+**Skip this question only if a workspace root has already been
+established** — either `~/.ai-baton/config.json` exists, or a
+`~/ai-baton-workspace/` directory already exists. If neither exists yet,
+this is genuinely the first time, and defaulting silently is exactly the
+mistake this question prevents:
+
+> "Use the default location (`~/ai-baton-workspace`), or somewhere else?"
+> (guided question if available, default option first per the ordering
+> rule in Step 0)
+
+If they pick somewhere else, run `ai-baton workspace set <path>` to
+remember it — a one-time question, not a recurring one. If the path
+they give is unusable, the CLI's error says so plainly (not a raw
+traceback); tell them it's not accessible and ask for a different one —
+don't guess or fall back silently.
+
+Once the root is settled, get the project name too (short, descriptive:
+`ielts-prep`, `thesis`, not "project"): the project lives at
+`<root>/<project-name>/`. The workspace root is never itself a project —
+every project is its own named subdirectory inside it, the same way
+`ai-baton list` finds them later. Never write `PROTOCOL.md` directly into
+the workspace root.
+
+Only deviate from the workspace default if the user explicitly wants
+somewhere else — e.g. "put it inside this repo I'm working on" is a
+legitimate reason. But if they name a general-purpose folder they already
+use for other things ("put it in Documents," "in my home folder"), don't
+scaffold directly into that folder either — create a project-named
+subdirectory inside whatever they named, same principle as the workspace
+default; that folder already has unrelated stuff in it and dumping
+`PROTOCOL.md` straight into it pollutes it.
+
+Don't hardcode a Unix-style path (`~/...`, `/Users/...`) and assume it's
+right — home directories and separators differ by OS (Windows:
+`C:\Users\<name>\...`). Running `ai-baton` commands handles this for you;
+constructing a path yourself in prose or a manual fallback needs the real
+path for the user's actual OS.
+
+### Question 2 — is this related to what we've already been discussing?
+
+**Always ask this for a new project — never decide it silently, in
+either direction.** Judging "is there relevant prior context" yourself is
+a call that can be wrong both ways: skipping real context you decided
+didn't look relevant, or dragging in unrelated earlier discussion into a
+project that's actually about something else. Ask explicitly:
+
+> "这个跟咱们之前聊的内容有关吗?要不要我回顾一下这段对话,把相关的东西整理进去?"
+> ("Is this related to what we've already been discussing? Want me to
+> review this conversation and pull in anything relevant?")
+
+- **If yes**: review it, then sort what you find into:
+  - Things that look like durable facts/decisions → candidates for
+    `memory/`, but `confidence: unverified` unless the user actually
+    confirms them now — you're inferring from a conversation, not from a
+    primary source.
+  - What's actually happening right now → feeds into Question 3.
+  - Raw detail worth preserving (a specific error, a specific exchange) →
+    `evidence/`.
+
+  Show the user this breakdown and get confirmation before writing any of
+  it — don't silently decide on their behalf what from the conversation
+  mattered enough to keep.
+- **If no** (a genuinely unrelated fresh topic, e.g. a new PPT on
+  something else entirely): treat Question 3 as a blank start.
+
+### Question 3 — what's the current goal?
+
+If Question 2's backfill already surfaced a clear current state, confirm
+it rather than re-asking from scratch. Otherwise ask directly what the
+actual current goal is. Either way, write it into
+`status/CURRENT_STATUS.md` — don't leave it as a template placeholder.
+
+Then create the project structure. If the `ai-baton` CLI is installed
+(`ai-baton --help` succeeds), run:
+```
+ai-baton init <path>
+```
+If the CLI isn't installed, create the structure by hand — it's just
+files:
+```
+<path>/PROTOCOL.md          # copy the "Rules" section below into it
+<path>/memory/INDEX.md      # frontmatter: id, date, confidence, source (see Step 3)
+<path>/status/CURRENT_STATUS.md
+<path>/evidence/
+<path>/handover/
+<path>/archive/
+```
 
 ## Step 2b — Existing project
 
