@@ -208,6 +208,18 @@ session, different tool than last time, or you're not sure you have the
 full picture — re-read these three now. Don't act on a remembered summary
 that might be stale or fabricated.
 
+**This isn't only a new-project question — ask it here too.** If this
+conversation already has discussion relevant to the project from before
+you picked it up (the user was talking about it, or something adjacent,
+earlier in this same session), don't silently decide whether that's
+worth capturing. Ask, the same way Step 2a's Question 2 does: "这段对话里
+有跟这个项目相关的新内容吗?要不要我看看有没有该更新进去的?" ("Is there
+anything relevant to this project earlier in this conversation? Want me
+to check whether anything should be added?"). If yes, sort it the same
+way — durable facts to `memory/` (unverified unless confirmed), current
+state to `status/CURRENT_STATUS.md`, raw detail to `evidence/` — and
+confirm the breakdown before writing.
+
 Self-assessment here is inherently unreliable — a session that's actually
 lost instructions is often the one least able to notice it did. If
 `PROTOCOL.md`'s "Project-specific rules" defines a canary instruction
