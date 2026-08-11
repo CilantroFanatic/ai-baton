@@ -193,6 +193,14 @@ session, different tool than last time, or you're not sure you have the
 full picture — re-read these three now. Don't act on a remembered summary
 that might be stale or fabricated.
 
+Self-assessment here is inherently unreliable — a session that's actually
+lost instructions is often the one least able to notice it did. If
+`PROTOCOL.md`'s "Project-specific rules" defines a canary instruction
+(e.g. ending every reply with `[baton: held]`), that's an external,
+observable signal instead: follow it every reply, and if you notice
+yourself having skipped it, treat that as a sign to re-read now rather
+than pushing through.
+
 ## Step 3 — while working (applies to both new and existing)
 
 - **Dates are always `YYYY-MM-DD`.** Never "today"/"tomorrow" — they expire

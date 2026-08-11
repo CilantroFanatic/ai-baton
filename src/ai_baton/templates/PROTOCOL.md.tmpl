@@ -29,3 +29,20 @@ stale or fabricated.
 ## Project-specific rules
 
 (none yet — add project-specific exceptions or conventions here)
+
+<!--
+Optional: a "canary instruction" for noticing context degradation before
+it causes a mistake. Long conversations can dilute or drop instructions
+without the AI ever realizing it happened -- self-assessment ("if you
+suspect you're on a compacted context") is unreliable precisely when it
+matters most. A canary makes that failure observable instead of silent:
+
+  Every reply ends with the tag `[baton: held]`.
+
+It carries no functional meaning on its own -- that's the point. If a
+reply is missing it, treat that as a signal (not proof) that instructions
+may have degraded, and re-read this file, `memory/INDEX.md`, and
+`status/CURRENT_STATUS.md` before continuing. Delete this block if you'd
+rather not have the tag on every reply.
+-->
+
