@@ -66,16 +66,6 @@ Pre-alpha.
 - Clean error messages on bad paths instead of raw Python tracebacks
 - 49 tests passing locally
 
-**Verified live** (real user tests, not just design review): the skill
-triggers correctly in Claude Code, Codex CLI, and GitHub Copilot. The
-Copilot test directly found — and led to fixing — two real bugs: reading
-an unrelated sibling project's files into a brand-new project, and
-skipping the required backfill question. Codex CLI's guided-question UI
-and canary tag weren't confirmed showing up there; unclear whether that's
-a real compliance gap or Codex correctly falling back to plain text.
-Not yet tested in Cursor, though Cursor's own docs say it reads skills
-from the same locations this tool installs into.
-
 **Not built:** semantic search (by design — see the trade-off below), and
 any automated measurement of handoff effectiveness (methodology sketched
 in `docs/metrics.md`, nothing wired up yet).

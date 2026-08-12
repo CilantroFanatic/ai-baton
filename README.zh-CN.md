@@ -36,8 +36,6 @@ Pre-alpha。
 - 路径不对时给出人话错误提示,不是 Python 报错栈
 - 49 个测试本地全过
 
-**现场验证过**(真实用户测试,不只是设计review):在 Claude Code、Codex CLI、GitHub Copilot 里都确认能触发。Copilot 那次测试直接测出、并推动修复了两个真实 bug——把不相关的兄弟项目内容读进了新项目、跳过了该问的整合确认。Codex CLI 里没确认 `[baton: held]` 哨兵标记和引导式提问是否出现过,不确定是真的没遵守规则,还是它本来就没有弹窗能力、按规则正确回退成了纯文字。Cursor 还没实测过,不过 Cursor 官方文档说它读取 skill 的位置跟这个工具安装进去的位置是同一批。
-
 **还没做的:** 语义搜索(有意不做,见下面的取舍说明)、任何自动化的交接效果量化(方法论写在 `docs/metrics.md` 里,还没接进代码)。
 
 不是第一个想做跨工具 AI 记忆的系统——Mem0、OpenMemory、Letta 解决的是类似的问题,靠的是向量库和/或 agent 运行时。这个项目走的是相反的取舍:零基础设施、Git 原生可审计,代价是没有语义搜索和自动抽取。详见 [`docs/comparison.md`](docs/comparison.md)。
