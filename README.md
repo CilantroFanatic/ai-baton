@@ -13,9 +13,9 @@ no vector database, no vendor lock-in.
 ## When you'd use this
 
 - **You run out of usage on one tool and need to switch.** Cursor's out
-  of credits, so you jump over to Codex (or whatever's next) to keep
-  going — without this, that means re-explaining the whole project from
-  scratch: what you decided, what you already ruled out, all of it.
+  of credits, so you jump over to Codex, WorkBuddy, or whatever's next to
+  keep going — without this, that means re-explaining the whole project
+  from scratch: what you decided, what you already ruled out, all of it.
 - **The conversation's gotten too long and you want a fresh one.** To
   save tokens, or because quality drops once context gets huge — starting
   over shouldn't mean losing everything you already worked out.
@@ -42,7 +42,8 @@ writing, keeps state current — without being reminded every session.
 
 Requires local filesystem access — works with tools that run on your
 machine or have been granted access to a folder (Claude Code, Codex CLI,
-Cursor, Windsurf, Claude Desktop with a filesystem connector, etc.). Plain
+Cursor, Windsurf, WorkBuddy, Claude Desktop with a filesystem connector,
+etc.). Plain
 web ChatGPT or web Claude.ai chat can't read `PROTOCOL.md` at all — no
 file access, so Agent Skills support doesn't help there.
 
