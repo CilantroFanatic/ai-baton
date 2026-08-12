@@ -4,24 +4,21 @@
 
 Portable, auditable, file-first handoff protocol for AI assistants.
 
-Lets you move between AI tools — Claude Code, Codex CLI, Cursor, GitHub
-Copilot, or anything else that reads/writes files — on the same
-long-running project without re-explaining context every time. State
-lives in plain Markdown + YAML files in your own repo, readable with
-`git diff`. No server, no vector DB, no vendor plugin required.
+Lets you switch between AI tools — Claude Code, Codex CLI, Cursor, GitHub
+Copilot, or anything else that can read and write files — on the same
+long-running project, without re-explaining everything from scratch.
+Everything lives in plain text files in your project folder — no server,
+no vector database, no vendor lock-in.
 
 ## When you'd use this
 
-- **Switching tools on the same project.** You worked out an approach in
-  Claude Code — tech choices made, dead ends already ruled out — and now
-  want to keep going in Cursor, without re-explaining any of it.
-- **Bouncing between tools day to day.** Cursor at the office, Claude Code
-  at home; or two people on the same repo using different tools. Everyone
-  reads the same files instead of re-syncing state by hand.
-- **A conversation that's gotten too long to just re-paste.** Starting a
-  fresh session — to save tokens, or because quality degrades on very
-  long context — shouldn't mean losing everything. A few hundred words of
-  distilled state beats re-sending a whole transcript.
+- **You run out of usage on one tool and need to switch.** Cursor's out
+  of credits, so you jump over to Codex (or whatever's next) to keep
+  going — without this, that means re-explaining the whole project from
+  scratch: what you decided, what you already ruled out, all of it.
+- **The conversation's gotten too long and you want a fresh one.** To
+  save tokens, or because quality drops once context gets huge — starting
+  over shouldn't mean losing everything you already worked out.
 
 ## How it works
 
