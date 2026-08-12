@@ -282,6 +282,15 @@ not queue it up as "remember this for later":
   up** → do a final `status/CURRENT_STATUS.md` pass and run `ai-baton
   validate <path>` if the CLI is available (see the bullet on this
   further down) — this is a backstop, not the only time writing happens.
+- **You're deliberately handing off** — ending a session expecting a
+  different tool, or a different person, to pick this up next → write a
+  full point-in-time snapshot to `handover/` (SPEC.md §3.4), not just the
+  routine `status/CURRENT_STATUS.md` update. This is richer, and once
+  written it's permanent — unlike `status/`, later sessions don't
+  overwrite it, so it's still readable as "what things looked like right
+  then" long after `status/` has moved on. Don't do this at the end of
+  every session, only when an actual handoff is happening — otherwise the
+  routine `status/CURRENT_STATUS.md` update is enough.
 
 Waiting until the end of a long session to write everything at once
 defeats the point — detail gets lost, and it's exactly the kind of
