@@ -35,11 +35,16 @@ convention (`~/ai-baton-workspace/<project-name>/`, its root chosen once
 and remembered via `~/.ai-baton/config.json`, discoverable across
 tools/sessions via `ai-baton list`), a full worked example
 (`examples/demo-project/`), and an [Agent Skills](https://agentskills.io/)
-skill — `ai-baton skill install` puts it where Claude Code and Codex CLI
-look for it, confirmed triggering live in both (a real user test in Codex
-CLI discovered and ran the skill correctly, though full compliance with
-every rule — e.g. the canary tag, guided-question UI — wasn't confirmed
-there). Not yet tested in Cursor.
+skill — `ai-baton skill install` puts it where Claude Code, Codex CLI, and
+GitHub Copilot look for it, confirmed triggering live in all three (real
+user tests: Codex CLI discovered and ran the skill correctly, though full
+compliance with every rule — e.g. the canary tag, guided-question UI —
+wasn't confirmed there; Copilot discovered and ran it too, and that test
+directly found two real bugs — reading an unrelated sibling project's
+files into a new one, and skipping the backfill question — both fixed as
+a result). Not yet tested in Cursor, though Cursor's own docs say it reads
+skills from the same `.agents/skills/`/`.claude/skills/` locations this
+tool installs into.
 `validate` also flags well-known credential formats (AWS/GitHub/Slack
 keys, private key blocks) as a heuristic safety net, not a full secrets
 scanner, and warns (per-project configurable via `.ai-baton.json`) when

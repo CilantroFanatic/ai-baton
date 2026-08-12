@@ -125,6 +125,14 @@ dropped one of these — asking blind, defaulting a path without asking,
 skipping the backfill question — usually because the AI judged for itself
 that a step wasn't needed instead of just asking.
 
+**If you notice you're already creating or writing project files and
+can't point to an actual asked-and-answered exchange for one of these
+three questions** (not "I meant to," not "it seemed obvious" — a real
+question was asked and the user actually responded), stop right where you
+are and ask it now, even mid-task. Retroactively asking after the fact
+defeats the point as much as not asking at all — the user should confirm
+before content exists, not be told what was already written.
+
 ### Question 1 — where should this live?
 
 **Skip this question only if a workspace root has already been
@@ -257,7 +265,12 @@ not queue it up as "remember this for later":
 - **A decision gets made, or a fact gets confirmed** → write it to
   `memory/` immediately. Don't wait to be asked, and don't wait for the
   session to end — by the time anyone thinks to say "remember this,"
-  it should already be written.
+  it should already be written. Capture the *why*, briefly, not just the
+  conclusion — context compaction (in this tool or any other) is built to
+  discard intermediate reasoning while keeping decisions, so once it fires
+  the reasoning behind a choice is gone unless it was already written down
+  here. This isn't only a cross-tool concern; it happens within a single
+  long session too.
 - **Something about the current situation changes** — a blocker appears
   or clears, the next step changes, the goal shifts → update
   `status/CURRENT_STATUS.md` right then, not just at the end.
@@ -277,6 +290,13 @@ exists to prevent.
 
 - **Dates are always `YYYY-MM-DD`.** Never "today"/"tomorrow" — they expire
   the moment this file is read later.
+- **Write `memory/` and `status/` entries densely, not narratively.** These
+  files get re-read in full at the start of every future session — a
+  padded paragraph costs tokens every time it's loaded, not just once.
+  State the fact/decision/current-state directly; skip scene-setting,
+  hedging, and restating the question. Still write complete, clear
+  sentences — this isn't "be cryptic," just "don't carry chat filler into
+  a file that gets paid for on every read."
 - **Long-term facts/decisions go in `memory/`**, one file per fact/decision,
   with frontmatter: `id`, `date`, `confidence` (`verified` or `unverified`),
   `source`. Don't write something as `verified` unless it's actually been
