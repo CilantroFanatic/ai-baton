@@ -190,7 +190,7 @@ version they conform to (e.g., in `PROTOCOL.md`'s header).
 
 ## 8. Optional configuration
 
-Two separate, deliberately distinct config files — different scope, don't
+Three separate, deliberately distinct files — different scope, don't
 confuse them:
 
 ### 8.1 Per-project: `.ai-baton.json`
@@ -210,6 +210,34 @@ project on that machine.
 |---|---|---|
 | `workspace` | `~/ai-baton-workspace` | The default container directory `ai-baton list` scans and new projects are created under when no explicit path is given (§3, workspace convention). Set once via `ai-baton workspace set <path>`, the first time a user is asked where their workspace should live — not re-asked for every subsequent project. |
 
-Both files: missing means defaults apply. Present but malformed means the
-tool warns (or, for the CLI's path-resolution use of `workspace`, falls
-back silently to the default) rather than failing outright.
+### 8.3 Per-workspace: `<workspace-root>/.ai-baton-workspace.json`
+
+At the workspace root (whether the default `~/ai-baton-workspace` or a
+custom one — see §3), a cache of every project's name and one-line
+current-goal description, so `ai-baton list` (and a no-CLI fallback) can
+show what's in a workspace without opening each project's own `memory/`,
+`status/`, or `evidence/` files.
+
+```json
+{
+  "projects": {
+    "thesis": { "description": "Finish chapter 3", "updated": "2026-08-12" }
+  }
+}
+```
+
+Refreshed by `ai-baton validate` (from that project's
+`status/CURRENT_STATUS.md`), and lazily backfilled by `ai-baton list`
+itself the first time it finds a project missing from the cache — not
+meant to be the source of truth, just a fast, disposable cache of it. If
+it's missing, stale, or deleted, nothing is lost: entries are rebuilt from
+each project's own status file the next time they're needed. A project's
+own files remain authoritative —
+this cache exists so that reading *other* projects' internal files is
+never necessary just to list what's in a workspace (see the skill's Step 1
+for why that boundary matters).
+
+All three files: missing means defaults apply (or, for this manifest, that
+`list` falls back to scanning). Present but malformed means the tool warns
+(or, for the CLI's path-resolution use of `workspace`, falls back silently
+to the default) rather than failing outright.

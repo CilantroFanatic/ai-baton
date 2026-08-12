@@ -72,8 +72,12 @@ don't guess and don't ask blind — **check the default workspace first**:
 ai-baton list
 ```
 
-(No CLI available? List that directory yourself the same way:
-subdirectories containing `PROTOCOL.md` are existing projects.)
+(No CLI available? Read `<workspace>/.ai-baton-workspace.json` yourself if
+it exists — `{"projects": {"<name>": {"description": "...", "updated":
+"YYYY-MM-DD"}}}` — instead of opening every project's own files. Only fall
+back to listing subdirectories containing `PROTOCOL.md` by hand if that
+manifest is missing or unreadable, and even then that's just for names —
+see the next paragraph.)
 
 - **The workspace has one or more projects**: show them to the user (name
   + whatever current-goal line `list` printed) and ask which one, or
@@ -96,6 +100,20 @@ subdirectories containing `PROTOCOL.md` are existing projects.)
   If the user has multiple ai-baton projects going (e.g. one per exam, one
   for a thesis), this is the moment that keeps them from getting mixed
   together — don't assume which one "the project" means.
+
+**Other projects in the workspace are not context for this one.**
+`ai-baton list` (or the workspace manifest, or manually checking for
+`PROTOCOL.md`) exists only to find project *names* and their one-line
+descriptions, so the user can pick which one they mean. Once you've
+resolved that, never open a *different* project's `memory/`, `status/`, or
+`evidence/` files and fold their content into the project you're creating
+or working on — not even if it looks topically related or recent. A live
+test found an AI doing exactly this: creating a brand-new project and
+silently pre-filling its `CURRENT_STATUS.md` from an unrelated sibling
+project's status file, without asking. If something from another existing
+project genuinely belongs here, that's the user's explicit call to make
+(they can say so, or paste it themselves) — not something to infer by
+reading their other projects' files.
 
 ## Step 2a — New project: three fixed questions, in this order
 
@@ -270,6 +288,14 @@ exists to prevent.
 - **`status/CURRENT_STATUS.md` gets overwritten** (not appended) after
   every significant unit of work: current goal, what's done, what's
   blocked, what's next.
+- **If the `ai-baton` CLI is available, running `ai-baton validate <path>`
+  also refreshes this project's one-line entry in the parent workspace's
+  `.ai-baton-workspace.json`** — that's what keeps `ai-baton list` fast and
+  accurate without opening every project's files (see Step 1). If the CLI
+  isn't available and you're hand-editing `CURRENT_STATUS.md`, also
+  hand-update this project's entry in that same file (create it, or the
+  `"projects"` object, if missing) so it doesn't go stale — don't leave
+  that step to whoever happens to run `validate` next.
 - **New evidence contradicting an existing `memory/` entry**: update that
   file in place with a dated correction note — don't silently rewrite it,
   and don't delete the old evidence that's now superseded.

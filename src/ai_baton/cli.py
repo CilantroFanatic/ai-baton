@@ -130,6 +130,14 @@ def _dispatch(args: argparse.Namespace) -> int:
 
     if args.command == "validate":
         result = validate_cmd.run(target)
+        # A side effect of the CLI command, not of validate.run() itself --
+        # keeps the parent workspace's project manifest in sync (SPEC.md
+        # §8.3) without validate.run() writing outside `target` when used
+        # as a library call (e.g. in tests, or against a project that isn't
+        # inside any workspace at all).
+        workspace_cmd.upsert_project(
+            target.parent, target.name, workspace_cmd._current_goal(target)
+        )
         for warning in result.warnings:
             print(f"WARN  {warning}")
         for error in result.errors:

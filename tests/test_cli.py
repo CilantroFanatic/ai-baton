@@ -68,3 +68,44 @@ def test_list_via_cli_reports_missing_workspace(tmp_path: Path, capsys) -> None:
 
     assert exit_code == 0
     assert "no workspace at" in captured.out
+
+
+def test_validate_via_cli_refreshes_the_workspace_manifest(
+    tmp_path: Path, capsys
+) -> None:
+    import json
+
+    from ai_baton.commands import workspace as workspace_cmd
+
+    project = tmp_path / "ws" / "thesis"
+    cli.main(["init", str(project)])
+    (project / "status" / "CURRENT_STATUS.md").write_text(
+        "Last updated: 2026-01-01\n\n## Current goal\n\nFinish chapter 3.\n"
+    )
+    capsys.readouterr()
+
+    exit_code = cli.main(["validate", str(project)])
+    capsys.readouterr()
+
+    assert exit_code == 0
+    manifest = json.loads(
+        (project.parent / workspace_cmd.MANIFEST_FILE).read_text()
+    )
+    assert manifest["projects"]["thesis"]["description"] == "Finish chapter 3."
+
+
+def test_validate_via_library_call_does_not_write_a_manifest(
+    tmp_path: Path,
+) -> None:
+    """validate.run() is a pure check -- the manifest refresh is a CLI-only
+    side effect (test_validate_via_cli_refreshes_the_workspace_manifest),
+    so calling it directly (as tests and other tooling do, e.g. against
+    examples/demo-project) must never write outside the target project."""
+    from ai_baton.commands import validate, workspace as workspace_cmd
+
+    project = tmp_path / "ws" / "thesis"
+    cli.main(["init", str(project)])
+
+    validate.run(project)
+
+    assert not (project.parent / workspace_cmd.MANIFEST_FILE).exists()

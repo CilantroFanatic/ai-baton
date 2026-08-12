@@ -110,3 +110,83 @@ def test_list_projects_skips_dirs_without_protocol(tmp_path: Path) -> None:
 
     assert any("no ai-baton projects found" in line for line in lines)
     assert not any("not-a-project" in line for line in lines)
+
+
+def test_upsert_project_writes_a_manifest_entry(tmp_path: Path) -> None:
+    ws = tmp_path / "ws"
+
+    workspace.upsert_project(ws, "thesis", "Finish chapter 3")
+
+    import json
+
+    data = json.loads((ws / workspace.MANIFEST_FILE).read_text())
+    assert data["projects"]["thesis"]["description"] == "Finish chapter 3"
+    assert "updated" in data["projects"]["thesis"]
+
+
+def test_upsert_project_ignores_empty_description(tmp_path: Path) -> None:
+    ws = tmp_path / "ws"
+    workspace.upsert_project(ws, "thesis", "Finish chapter 3")
+
+    workspace.upsert_project(ws, "thesis", None)
+
+    import json
+
+    data = json.loads((ws / workspace.MANIFEST_FILE).read_text())
+    assert data["projects"]["thesis"]["description"] == "Finish chapter 3"
+
+
+def test_list_projects_prefers_the_manifest_over_reading_status(
+    tmp_path: Path,
+) -> None:
+    ws = tmp_path / "ws"
+    project = ws / "thesis"
+    init.run(project)
+    (project / "status" / "CURRENT_STATUS.md").write_text(
+        "Last updated: 2026-01-01\n\n## Current goal\n\nReal file says X.\n"
+    )
+    workspace.upsert_project(ws, "thesis", "Manifest says Y")
+
+    lines = workspace.list_projects(ws)
+
+    assert any("Manifest says Y" in line for line in lines)
+    assert not any("Real file says X" in line for line in lines)
+
+
+def test_list_projects_backfills_the_manifest_for_a_project_missing_from_it(
+    tmp_path: Path,
+) -> None:
+    ws = tmp_path / "ws"
+    project = ws / "thesis"
+    init.run(project)
+    (project / "status" / "CURRENT_STATUS.md").write_text(
+        "Last updated: 2026-01-01\n\n## Current goal\n\nFinish chapter 3.\n"
+    )
+    # No manifest exists yet -- simulates a project created before this
+    # feature, or without the CLI.
+
+    lines = workspace.list_projects(ws)
+    assert any("Finish chapter 3." in line for line in lines)
+
+    import json
+
+    data = json.loads((ws / workspace.MANIFEST_FILE).read_text())
+    assert data["projects"]["thesis"]["description"] == "Finish chapter 3."
+
+
+def test_list_projects_does_not_open_a_sibling_projects_status_file_when_cached(
+    tmp_path: Path,
+) -> None:
+    """Once the manifest has an entry, list_projects must not need to read
+    that project's status file at all -- the whole point of the cache is to
+    avoid opening other projects' files (see SKILL.md Step 1)."""
+    ws = tmp_path / "ws"
+    project = ws / "thesis"
+    init.run(project)
+    workspace.upsert_project(ws, "thesis", "Cached goal")
+    status_file = project / "status" / "CURRENT_STATUS.md"
+    status_file.unlink()  # if list_projects tried to read it, this would raise
+
+    lines = workspace.list_projects(ws)
+
+    assert any("Cached goal" in line for line in lines)

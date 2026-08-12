@@ -45,7 +45,7 @@ keys, private key blocks) as a heuristic safety net, not a full secrets
 scanner, and warns (per-project configurable via `.ai-baton.json`) when
 `memory/` gets large enough to be a real token cost every session. Bad
 paths now fail with a plain error message instead of a Python traceback.
-40 tests pass locally. Not
+49 tests pass locally. Not
 built: semantic search (by design) and any automated measurement of
 handoff effectiveness (methodology sketched in
 `docs/metrics.md`, nothing wired up).
