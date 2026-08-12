@@ -19,6 +19,10 @@ no vector database, no vendor lock-in.
 - **The conversation's gotten too long and you want a fresh one.** To
   save tokens, or because quality drops once context gets huge — starting
   over shouldn't mean losing everything you already worked out.
+- **You're deliberately splitting the work across tools.** Backend in
+  Claude Code, frontend in Cursor; or one tool writing code and another
+  writing the docs. Both sides need to know what the other one already
+  decided — API shapes, naming — or they end up out of sync.
 
 ## How it works
 
