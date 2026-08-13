@@ -26,7 +26,7 @@ the magic words:
 - **The user (or you) discovers this mid-conversation** — they weren't
   setting this up from message one; there's already real history in this
   conversation that matters. Don't treat that history as if it doesn't
-  exist — see Step 2a Question 2 (or Step 2b's version of the same check
+  exist — see Step 2a Question 3 (or Step 2b's version of the same check
   for an existing project).
 
 In both cases, get the user's go-ahead before creating anything. This is
@@ -37,8 +37,9 @@ offers a structured/interactive question mechanism (multiple-choice with
 a free-text fallback, buttons, whatever your host supports) — use it
 instead of a plain open paragraph, every time you ask the user something
 in this skill: Step 1's new-vs-existing question, the project name/goal
-in Step 2a, the backfill confirmation in Step 2a's Question 2 (and Step
-2b's equivalent). This holds even when
+in Step 2a, the content-language question (Step 2a's Question 1), and the
+backfill confirmation in Step 2a's Question 3 (and Step 2b's equivalent).
+This holds even when
 the real answer is open-ended (e.g. "what do you want to track") — offer
 a few illustrative categories (thesis, exam prep, job search, whatever
 fits the conversation) as quick picks, with "something else" as an
@@ -115,9 +116,9 @@ project genuinely belongs here, that's the user's explicit call to make
 (they can say so, or paste it themselves) — not something to infer by
 reading their other projects' files.
 
-## Step 2a — New project: three fixed questions, in this order
+## Step 2a — New project: four fixed questions, in this order
 
-A new project always goes through these three questions, in this order.
+A new project always goes through these four questions, in this order.
 Each one names its own condition for skipping — don't skip for any other
 reason (topic "seems obvious," feels redundant, etc.), and don't reorder
 them. This exists because live testing kept finding sessions that quietly
@@ -127,13 +128,43 @@ that a step wasn't needed instead of just asking.
 
 **If you notice you're already creating or writing project files and
 can't point to an actual asked-and-answered exchange for one of these
-three questions** (not "I meant to," not "it seemed obvious" — a real
+four questions** (not "I meant to," not "it seemed obvious" — a real
 question was asked and the user actually responded), stop right where you
 are and ask it now, even mid-task. Retroactively asking after the fact
 defeats the point as much as not asking at all — the user should confirm
 before content exists, not be told what was already written.
 
-### Question 1 — where should this live?
+### Question 1 — what language should this project's content be written in?
+
+**Always ask this first, before anything else about the project.** Don't
+infer it from the language the conversation happens to be in right now —
+a user chatting in Chinese might still want an English thesis tracked, or
+vice versa, and the answer needs to hold across future sessions/tools that
+might not share the current conversation's language. Guided question if
+available, default option first — lead with whichever language this
+conversation has actually been happening in, since that's the likely
+answer most of the time, with other common options and an explicit "都行/
+混着写" (no preference / mixed) choice:
+
+> "这个项目的记忆文件(memory/status/evidence 等)用什么语言写?"
+> ("What language should this project's memory files — memory/, status/,
+> evidence/, etc. — be written in?")
+
+Once the project exists (Question 4 creates it), record the answer as a
+line under `PROTOCOL.md`'s "Project-specific rules", e.g. "Write
+`memory/`, `status/`, `evidence/`, and `handover/` content in Chinese."
+From then on, every session that reads `PROTOCOL.md` picks this rule up
+automatically — it's not re-asked for this project again.
+
+**This never changes directory or file naming.** Project names, and any
+filename or path segment inside `memory/`/`evidence/`/etc., stay short,
+descriptive English kebab-case (`ielts-prep`,
+`2026-08-13-error-fix.md`) regardless of the chosen content language —
+naming convention and content language are independent axes, and mixing
+non-ASCII characters into paths risks breaking tooling (the CLI, `grep`,
+cross-platform path handling) that assumes ASCII names.
+
+### Question 2 — where should this live?
 
 **Skip this question only if a workspace root has already been
 established** — either `~/.ai-baton/config.json` exists, or a
@@ -173,7 +204,7 @@ right — home directories and separators differ by OS (Windows:
 constructing a path yourself in prose or a manual fallback needs the real
 path for the user's actual OS.
 
-### Question 2 — is this related to what we've already been discussing?
+### Question 3 — is this related to what we've already been discussing?
 
 **Always ask this for a new project — never decide it silently, in
 either direction.** Judging "is there relevant prior context" yourself is
@@ -190,7 +221,7 @@ project that's actually about something else. Ask explicitly:
     `memory/`, but `confidence: unverified` unless the user actually
     confirms them now — you're inferring from a conversation, not from a
     primary source.
-  - What's actually happening right now → feeds into Question 3.
+  - What's actually happening right now → feeds into Question 4.
   - Raw detail worth preserving (a specific error, a specific exchange) →
     `evidence/`.
 
@@ -198,11 +229,11 @@ project that's actually about something else. Ask explicitly:
   it — don't silently decide on their behalf what from the conversation
   mattered enough to keep.
 - **If no** (a genuinely unrelated fresh topic, e.g. a new PPT on
-  something else entirely): treat Question 3 as a blank start.
+  something else entirely): treat Question 4 as a blank start.
 
-### Question 3 — what's the current goal?
+### Question 4 — what's the current goal?
 
-If Question 2's backfill already surfaced a clear current state, confirm
+If Question 3's backfill already surfaced a clear current state, confirm
 it rather than re-asking from scratch. Otherwise ask directly what the
 actual current goal is. Either way, write it into
 `status/CURRENT_STATUS.md` — don't leave it as a template placeholder.
@@ -240,13 +271,19 @@ that might be stale or fabricated.
 conversation already has discussion relevant to the project from before
 you picked it up (the user was talking about it, or something adjacent,
 earlier in this same session), don't silently decide whether that's
-worth capturing. Ask, the same way Step 2a's Question 2 does: "这段对话里
+worth capturing. Ask, the same way Step 2a's Question 3 does: "这段对话里
 有跟这个项目相关的新内容吗?要不要我看看有没有该更新进去的?" ("Is there
 anything relevant to this project earlier in this conversation? Want me
 to check whether anything should be added?"). If yes, sort it the same
 way — durable facts to `memory/` (unverified unless confirmed), current
 state to `status/CURRENT_STATUS.md`, raw detail to `evidence/` — and
 confirm the breakdown before writing.
+
+**If `PROTOCOL.md`'s "Project-specific rules" has no content-language line**
+(a project created before this rule existed, or `ai-baton init` was run by
+hand outside the skill), ask Step 2a's Question 1 now, once, and add the
+answer to that section — don't retroactively rewrite existing `memory/`/
+`status/`/`evidence/` content to match, just apply it going forward.
 
 Self-assessment here is inherently unreliable — a session that's actually
 lost instructions is often the one least able to notice it did. If
@@ -299,6 +336,11 @@ exists to prevent.
 
 - **Dates are always `YYYY-MM-DD`.** Never "today"/"tomorrow" — they expire
   the moment this file is read later.
+- **File content follows `PROTOCOL.md`'s recorded content-language rule**,
+  not whatever language the current conversation happens to be in — that's
+  what keeps `memory/`/`status/`/`evidence/`/`handover/` consistent across
+  sessions and tools that might run in a different language. Directory and
+  file names stay English kebab-case regardless (Step 2a Question 1).
 - **Write `memory/` and `status/` entries densely, not narratively.** These
   files get re-read in full at the start of every future session — a
   padded paragraph costs tokens every time it's loaded, not just once.
