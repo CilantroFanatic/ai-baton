@@ -1,6 +1,15 @@
 # Quickstart
 
-Two commands, once, ever:
+Needs Python 3.10+ and pip. Don't have it?
+
+- **macOS**: `brew install python` (or the installer at
+  [python.org](https://www.python.org/downloads/))
+- **Windows**: `winget install Python.Python.3.12` (or the installer at
+  python.org — tick "Add python.exe to PATH")
+- **Linux**: usually already there; if not, `sudo apt install python3
+  python3-pip` (Debian/Ubuntu) or your distro's equivalent
+
+Then, two commands, once, ever:
 
 ```bash
 pip install ai-baton-tool
